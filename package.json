@@ -1,0 +1,19 @@
+{
+  "name": "isp-term-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g-robertson/ISP-Term-Project.git"
+  },
+  "author": "Gregory Robertson and Seth Milojevic",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/g-robertson/ISP-Term-Project/issues"
+  },
+  "homepage": "https://github.com/g-robertson/ISP-Term-Project#readme"
+}
