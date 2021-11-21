@@ -10,7 +10,7 @@ app.all("/api/*", (req, res, next) => {
     let endpoint = req.path.substring("/api/".length);
     let apiFunction = APIS[endpoint];
     if (apiFunction !== undefined) {
-        res.send(`${apiFunction(req.query)}`).end();
+        res.send(`${apiFunction(req, res, next)}`).end();
     } else {
         res.status(404).end("This API endpoint does not exist.");
     }
