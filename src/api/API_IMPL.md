@@ -1,0 +1,1 @@
+All APIs will be implemented as NodeJS modules exporting a function main that accepts an HTTP query into a query object

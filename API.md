@@ -1,0 +1,1 @@
+All APIs will be accessed through /api/API_NAME?API_QUERY
