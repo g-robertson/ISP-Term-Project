@@ -1,16 +1,17 @@
 const HOSTNAME = "localhost";
 const PORT = 8080;
-const APIS = require("./src/helpers.js").getAllAPIs();
+import {getAllAPIs} from "./src/helpers.js";
+const APIS = await getAllAPIs();
 
-const express = require("express");
+import express from "express";
 const app = express();
 
 
-app.all("/api/*", (req, res, next) => {
+app.all("/api/*", async (req, res, next) => {
     let endpoint = req.path.substring("/api/".length);
     let apiFunction = APIS[endpoint];
     if (apiFunction !== undefined) {
-        res.send(`${apiFunction(req, res, next)}`).end();
+        await apiFunction(req, res, next);
     } else {
         res.status(404).end("This API endpoint does not exist.");
     }
