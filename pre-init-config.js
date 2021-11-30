@@ -8,6 +8,6 @@ export const PICONFIG = {
         host: "localhost",
         user: "root",
         password: "",
-        db: "myDB"
+        db: "myDB-ISP-TERM-PROJECT"
     }
 };
