@@ -1,4 +1,4 @@
-import * as express from "express";
+import express from "express";
 
 import {CONFIG} from "./config.js"
 import {getAllAPIs} from "./src/helpers.js";
