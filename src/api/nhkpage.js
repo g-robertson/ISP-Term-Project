@@ -1,6 +1,6 @@
 import {GET_CACHE} from "../getcache.js";
 
-export async function main(req, res, next) {
+export async function main(req, res, next, config) {
     if (req.query.date === undefined ||
         req.query.artnumber === undefined
     ) {
