@@ -14,8 +14,7 @@ async function main() {
     await aquery(`CREATE DATABASE ${PICONFIG.DB}`);
 
     await aquery(`USE ${PICONFIG.DB}`);
-    await aquery(`CREATE TABLE Users (Name varchar(30), Hash char(60), Token BINARY(64))`);
-
+    await aquery(`CREATE TABLE Users (Name nvarchar(30) PRIMARY KEY, Hash char(60), Token BINARY(64))`);
     dbcconn.end();
 }
 
