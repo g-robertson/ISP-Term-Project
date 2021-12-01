@@ -98,7 +98,7 @@ const Layout = ({ pageTitle, children }) => {
 						onChange={onChange}
 						value={value}
 						maxDate={new Date()}
-						onClickDay={(value) => {window.location.assign(`${PICONFIG.HTTP.host}:${PICONFIG.HTTP.port}/` + (value.toISOString()))}}
+						onClickDay={(date) => {window.location.assign(`/api/nhkpage?date=${date.valueOf()}&artnumber=0`)}}
 					/>
 				</div>
 				<div id="dropLinks" className={drop} style={{display:'none'}}>
