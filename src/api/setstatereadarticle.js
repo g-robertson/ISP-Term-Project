@@ -10,8 +10,13 @@ export async function main(req, res, next, config) {
         return;
     } else if (req.body.date === undefined || req.body.state === undefined) {
         res.status(400).end();
+        return;
     }
-
+    let date = new Date(Number(req.body.date));
+    if (date < new Date("01/01/2000")) {
+        res.status(400).end();
+        return;
+    }
 
     let name = getNameFromSession(req, res, next, config);
     if (user === undefined) {
