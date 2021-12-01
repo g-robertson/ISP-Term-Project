@@ -19,7 +19,7 @@ import {
 	mobileNav,
 	drop
 } from './layout.module.css'
-import {CONFIG} from "../../../config.js"
+import {PICONFIG} from "../../pre-init-config.js"
 
 
 export function toggleId(id, dis) {
@@ -98,7 +98,7 @@ const Layout = ({ pageTitle, children }) => {
 						onChange={onChange}
 						value={value}
 						maxDate={new Date()}
-						onClickDay={(value) => {window.location.assign(`${CONFIG.HTTP.host}/${CONFIG.HTTP.port}/` + (value.toISOString().substring(0,10)))}}
+						onClickDay={(value) => {window.location.assign(`${PICONFIG.HTTP.host}/${PICONFIG.HTTP.port}/` + (value.toISOString().substring(0,10)))}}
 					/>
 				</div>
 				<div id="dropLinks" className={drop} style={{display:'none'}}>

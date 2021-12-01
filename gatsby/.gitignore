@@ -1,3 +1,6 @@
 /node_modules
 .cache
 /public
+/pre-init-config.js
+/dbuser.js
+/dbpassword.js
