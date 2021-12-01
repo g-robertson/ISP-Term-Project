@@ -10,6 +10,9 @@ export async function main(req, res, next, config) {
     } else if (req.body.name === undefined || req.body.password === undefined) {
         res.status(400).end();
         return;
+    } else if (req.body.name.length === 0 || req.body.name.length >= 30) {
+        res.status(200).send("Username length must be greater than 0 and less than 30").end();
+        return;
     } else if (req.body.password.length <= MIN_PASSWORD_LENGTH) {
         res.status(200).send(`Password length must be greater than ${MIN_PASSWORD_LENGTH}.`).end();
         return;
