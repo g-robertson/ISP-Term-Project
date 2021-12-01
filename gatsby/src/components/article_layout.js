@@ -1,6 +1,5 @@
 import React from "react"
 import Layout from '../components/default_layout'
-import { StaticImage, GatsbyImage } from 'gatsby-plugin-image'
 import {
 	articleTitle,
   articleTimestamp,
@@ -21,9 +20,9 @@ export default function articleLayout({
           {timestamp}
         </p>
         <div>
-          <StaticImage
+          <img
             alt="Article Image"
-            src="../images/article_img.jpg"
+            src={"https://nhkeasier.com" + img}
             className={articleImage}
           />
         </div>

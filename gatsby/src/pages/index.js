@@ -1,23 +1,55 @@
-import * as React from 'react'
+import React, { Component } from 'react'
 import Layout from '../components/article_layout'
 
-const IndexPage = () => {
-  return (
-  		<Layout
-		  title="ファイザー「新しいワクチンは100日以内にできるだろう」"
-		  timestamp="2021-11-30 17:25:00 +0900 (JST)"
-		  img="../images/article_img.jpg"
-		  text={
-				[
-				  "アメリカの薬の会社、ファイザーのブーラCEOは29日、南アフリカで見つかった新型コロナウイルスの「オミクロン株」について話しました。",
-				  "ブーラCEOは「もし今のワクチンの効果が低くなるなら、新しいワクチンを作らなければなりません」と言いました。そして、「オミクロン株を詳しく調べています。ワクチンは100日以内にできると思います」と言いました。",
-				  "ブーラCEOは新しいワクチンが必要かどうかまだわからないと考えていて、「新しいワクチンを使うのは、オミクロン株に今のワクチンの効果がないとわかったときだけです」と言っています。",
-				  "ファイザーが今作っている新型コロナウイルスの飲む薬については「変化したウイルスでも、薬の効果は変わらないと考えています」と言いました。"
-				]
-			}
-		  >
+export default class IndexPage extends Component {
+	constructor(props) {
+		super(props)
+
+		this.state = {
+			titleText: "",
+			timestampText: "",
+			imgSrc: "",
+			bodyText: [],
+		}
+	}
+
+	componentDidMount() {
+		fetch('api/nhkpage?date=1638162000000&artnumber=0')
+			.then(response => {
+				return response.text()
+			})
+      		.then(resultData => {
+				resultData = resultData
+					.replaceAll(/<rt>.*?<\/rt>/g, '')
+					.replaceAll(/<table.*?<\/table>/gs, '')
+					.replaceAll(/<audio.*<\/audio>/g, '')
+					.replaceAll("<ruby>", '')
+					.replaceAll("</ruby>", '')
+					.replaceAll("</p>", '')
+					.replaceAll(/<a.*?>/g, '')
+					.replaceAll("</a>", '');
+				let titleParsed = resultData.split("<h3>").pop().split("</h3>")[0];
+				let timeParsed = resultData.split(/<time.*?>/).pop().split("</time>")[0];
+				let imgParsed = resultData.split("<img src=\"").pop().split("\"")[0];
+				let txtParsed = resultData.split(/<p.*?>/).slice(1);
+        		this.setState({ 
+					titleText: titleParsed,
+					timestampText: timeParsed,
+					imgSrc: imgParsed,
+					bodyText: txtParsed,
+				});
+      	})
+	}
+
+	render() {
+		return (
+			<Layout
+			title={this.state.titleText}
+			timestamp={this.state.timestampText}
+			img={this.state.imgSrc}
+			text={this.state.bodyText}
+			>
 		</Layout>
 	)
+	}
 }
-
-export default IndexPage

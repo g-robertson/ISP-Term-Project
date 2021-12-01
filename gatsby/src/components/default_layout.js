@@ -19,7 +19,6 @@ import {
 	mobileNav,
 	drop
 } from './layout.module.css'
-import {PICONFIG} from "../../pre-init-config.js"
 
 
 export function toggleId(id, dis) {
