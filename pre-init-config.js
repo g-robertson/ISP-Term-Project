@@ -10,7 +10,8 @@ export const PICONFIG = {
     MySQL:  {
         host: "localhost",
         user: dbuser,
-        password: dbpassword,
-        db: "myDBISPTERMPROJECT"
-    }
+        password: dbpassword
+    },
+
+    DB: "myDBISPTERMPROJECT"
 };
