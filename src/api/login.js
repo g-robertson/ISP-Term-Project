@@ -4,6 +4,7 @@ import {promisify} from "util";
 
 const MIN_PASSWORD_LENGTH = 8;
 export async function main(req, res, next, config) {
+    console.log(req.cookies);
     if (req.method !== "POST") {
         res.status(400).end();
         return;
@@ -18,22 +19,22 @@ export async function main(req, res, next, config) {
     const aquery = promisify(config.CONN.query).bind(config.CONN);
     await aquery(`USE ${config.DB}`);
     let results = await aquery(`SELECT Hash FROM Users WHERE Name=?;`, [req.body.name]);
+
+    let rndBytes = randomBytes(64);
     if (results.length > 0) {
         let hash = results[0].Hash;
         if (!(await bcrypt.compare(req.body.password, hash))) {
             res.status(200).send(`This username is taken`).end();
             return;
         }
-        let rndBytes = randomBytes(64);
-        await aquery(`UPDATE Users SET Token=? WHERE Name=?`, [rndBytes, req.body.name]);
 
-        res.status(200).send(rndBytes.toString("hex")).end();
-        return;
+        await aquery(`UPDATE Users SET Token=? WHERE Name=?`, [rndBytes, req.body.name]);
+    } else {
+        let hash = await bcrypt.hash(req.body.password, 10);
+        await aquery(`INSERT INTO Users VALUES (?, ?, ?);`, [req.body.name, hash, rndBytes]);
     }
 
-    let hash = await bcrypt.hash(req.body.password, 10);
-    let rndBytes = randomBytes(64);
-    await aquery(`INSERT INTO Users VALUES (?, ?, ?);`, [req.body.name, hash, rndBytes]);
-
-    res.status(200).send(rndBytes.toString("hex")).end();
+    const ONE_MONTH = 1000 * 60 * 60 * 24 * 30;
+    res.cookie("auth-token", rndBytes.toString("hex"), {httpOnly: true, maxAge: ONE_MONTH});
+    res.status(200).send("User successfully logged in").end();
 }

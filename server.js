@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 
 import {CONFIG} from "./config.js"
 import {getAllAPIs} from "./src/helpers.js";
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser())
 
 app.all("/api/*", async (req, res, next) => {
     if (req.method === "POST") {
