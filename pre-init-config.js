@@ -1,4 +1,4 @@
-import {dbpassword} from "dbpassword.js"
+import {dbpassword} from "./dbpassword.js"
 
 export const PICONFIG = {
     HTTP: {
