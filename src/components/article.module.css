@@ -1,0 +1,37 @@
+/* Article Page Stylings */
+.article-title {
+	color: blue;
+	font-size: 28px;
+	font-family: 'Noto Sans JP', sans-serif;
+}
+
+.article-timestamp {
+	color: black;
+	text-decoration: underline;
+	font-size: 20px;
+}
+
+.articleImage {
+	border: 1px solid black;
+	margin: 10px 0px 20px 0px;
+}
+
+.article-text {
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 22px;
+	line-height: 30px;
+	margin: 0px 0px 40px 0px;
+}
+
+.input-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 40px;
+	font-size: 18px;
+}
+
+input {
+	margin-right: 10px;
+	transform: scale(1.3);
+}

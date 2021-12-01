@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&display=swap');
+
+@media screen and (max-device-width: 720px) {
+	.mobileNav {
+		display: inline-flex;
+		justify-content: flex-end;
+		cursor: pointer;
+	}
+	nav {
+		display: none;
+	}
+}
+
+@media screen and (min-device-width: 721px) {
+	.mobileNav {
+		display: none;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+	font-family: 'Noto Sans', sans-serif;
+}
+
+nav {
+	flex-basis: 33%;
+}
+
+.drop {
+	display: none;
+	background-color: black;
+	padding-bottom: 10px;
+	text-align: center;
+	list-style: none;
+	width: 100%;
+}
+
+.drop ul {
+	margin: auto;
+}
+
+.drop li {
+	padding: 10px 0px 10px 0px;
+	font-size: 20px;
+}
+
+.container {
+	font-family: 'Noto Sans', sans-serif;
+}
+
+.content {
+	margin: 50px auto 0px auto;
+	max-width: 500px;
+}
+
+.date {
+	flex-basis: 34%;
+	color: #c4c4c4;
+	font-weight: bold;
+	text-align: center;
+	font-size: 24px;
+	cursor: pointer;
+}
+
+.navbar {
+	width: 100%;
+	background-color: black;
+}
+
+.nav-content {
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+	justify-content: space-between;
+	width: 95%;
+	height: 75px;
+	margin: auto;
+}
+
+.nav-logo {
+	flex-basis: 33%;
+}
+
+.nav-links {
+	display: flex;
+	list-style: none;
+	justify-content: flex-end;
+}
+
+.nav-link-item {
+	padding-right: 20px;
+}
+
+.nav-link-item:last-child {
+	padding-right: 0px;
+}
+
+.nav-link-text {
+	color: #c4c4c4;
+	text-decoration: none;
+}
+
+/* Calendar Dropdown Stylings */
+.calendar {
+	width: 350px;
+	margin: auto;
+	position: absolute;
+	z-index: 2;
+	left: 0;
+	right: 0;
+}
+
+/* Account Page Stylings */
+.heading {
+	font-size: 40px;
+	margin: auto;
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.inputBox {
+	width: 70%;
+	min-width: 320px;
+	font-size: 22px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0px auto 30px auto;
+}
+
+.inputBox input {
+	max-width: 150px;
+	height: 30px;
+	line-height: 30px;
+	border: 2px solid black;
+	border-radius: 5px;
+	padding: 0px 5px 3px 5px;
+	font-size: 18px;
+}
+
+.article-link {
+	text-decoration: underline;
+	color: black;
+}
+
+.kanji-entry {
+	font-size: 24px;
+	display: flex;
+	justify-content: space-between;
+	cursor: pointer;
+}
+
+.caret {
+	font-size: 21px;
+	padding-left: 10px;
+}
+
+.flexer {
+	display: flex;
+}
+
+.article-details {
+	display: flex;
+	justify-content: space-between;
+}
+
+.article-details:first-of-type {
+	border-top: 2px solid black;
+}
+
+.article-details:last-of-type {
+	border-bottom: 2px solid black;
+}

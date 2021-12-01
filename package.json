@@ -1,25 +1,28 @@
 {
-  "name": "isp-term-project",
+  "name": "jpez",
   "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "server.js",
+  "private": true,
+  "description": "jpez",
+  "keywords": [
+    "gatsby"
+  ],
   "scripts": {
-    "init": "node init.js"
+    "develop": "gatsby develop",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/g-robertson/ISP-Term-Project.git"
-  },
-  "author": "Gregory Robertson and Seth Milojevic",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/g-robertson/ISP-Term-Project/issues"
-  },
-  "homepage": "https://github.com/g-robertson/ISP-Term-Project#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "mysql": "^2.18.1",
-    "node-fetch": "^3.1.0"
+    "gatsby": "^4.2.0",
+    "gatsby-plugin-image": "^2.2.0",
+    "gatsby-plugin-react-helmet": "^5.2.0",
+    "gatsby-plugin-sass": "^5.2.0",
+    "gatsby-plugin-sharp": "^4.2.0",
+    "gatsby-source-filesystem": "^4.2.0",
+    "react": "^17.0.1",
+    "react-calendar": "^3.5.0",
+    "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0"
   }
 }
