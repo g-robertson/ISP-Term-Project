@@ -2,18 +2,26 @@ import express from "express";
 
 import {CONFIG} from "./config.js"
 import {getAllAPIs} from "./src/helpers.js";
+
 const APIS = await getAllAPIs();
 
 const app = express();
 
 
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 app.all("/api/*", async (req, res, next) => {
-    let endpoint = req.path.substring("/api/".length);
-    let apiFunction = APIS[endpoint];
-    if (apiFunction !== undefined) {
-        await apiFunction(req, res, next, CONFIG);
+    if (req.method === "POST") {
+        let endpoint = req.path.substring("/api/".length);
+        let apiFunction = APIS[endpoint];
+        if (apiFunction !== undefined) {
+            await apiFunction(req, res, next, CONFIG);
+        } else {
+            res.redirect("/404");
+        }
     } else {
-        res.status(404);
+        res.status(400).end();
     }
 });
 
