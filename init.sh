@@ -1,3 +1,8 @@
+npm install
+cd gatsby
+npm install
+cd ..
+
 node init.js
 
 rm -r public
