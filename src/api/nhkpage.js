@@ -13,7 +13,9 @@ export async function main(req, res, next, config) {
     let page = `https://nhkeasier.com/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     let response = await GET_CACHE.get(page);
     if (response === 404) {
-        res.status(200).send(`There is no page from nhkeasier on ${date.toISOString()}.`).end();
+        // old no page message
+        // .send(`There is no page from nhkeasier on ${date.toISOString()}.`)
+        res.status(404).end();
         return;
     } else if (typeof(response) === "number") {
         res.status(500).send("nhkeasier sent back an unexpected status code. If you see this, please report it back.").end();
