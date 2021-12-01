@@ -4,7 +4,6 @@ import {promisify} from "util";
 
 const MIN_PASSWORD_LENGTH = 8;
 export async function main(req, res, next, config) {
-    console.log(req.cookies);
     if (req.method !== "POST") {
         res.status(400).end();
         return;
