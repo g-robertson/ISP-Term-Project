@@ -8,7 +8,7 @@ export async function main(req, res, next, config) {
     } else if (req.cookies["auth-token"] === undefined) {
         res.status(400).end();
         return;
-    } else if (req.body.date === undefined) {
+    } else if (req.body.date === undefined || req.body.state === undefined) {
         res.status(400).end();
     }
 
@@ -20,14 +20,16 @@ export async function main(req, res, next, config) {
     }
 
     let articleId = articleIdFromDate(date);
+    createArticleInDB(articleId);
+    let state = req.body.state[0] === "t";
 
     const aquery = promisify(config.CONN.query).bind(config.CONN);
     await aquery(`USE ${config.DB}`);
 
     let results = await aquery(`SELECT UserName FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
-    if (results.length > 0) {
-        res.status(200).send("true").end();
-    } else {
-        res.status(200).send("false").end();
+    if (state && results.length === 0) {
+        await aquery(`INSERT INTO UserReadArticles VALUES (?, ?);`, [name, articleId]);
+    } else if (!state && results.length !== 0) {
+        await aquery(`DELETE FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
     }
 }
