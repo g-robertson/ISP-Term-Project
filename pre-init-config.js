@@ -1,3 +1,5 @@
+import {dbpassword} from "dbpassword.js"
+
 export const PICONFIG = {
     HTTP: {
         host: "localhost",
@@ -7,7 +9,7 @@ export const PICONFIG = {
     MySQL:  {
         host: "localhost",
         user: "root",
-        password: "password24$",
+        password: dbpassword,
         db: "myDBISPTERMPROJECT"
     }
 };
