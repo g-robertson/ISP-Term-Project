@@ -1,3 +1,4 @@
+import {articleFromDate} from "../article-helpers.js";
 import {GET_CACHE} from "../getcache.js";
 
 export async function main(req, res, next, config) {
@@ -10,7 +11,7 @@ export async function main(req, res, next, config) {
 
     let date = new Date(parseInt(req.query.date));
     let articleNumber = parseInt(req.query.artnumber);
-    let page = `https://nhkeasier.com/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+    let page = articleFromDate(date);
     let response = await GET_CACHE.get(page);
     if (response === 404) {
         // old no page message
