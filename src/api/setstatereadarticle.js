@@ -32,4 +32,6 @@ export async function main(req, res, next, config) {
     } else if (!state && results.length !== 0) {
         await aquery(`DELETE FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
     }
+
+    res.status(200).send("Proper state set for article read").end();
 }
