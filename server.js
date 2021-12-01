@@ -14,16 +14,12 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser())
 
 app.all("/api/*", async (req, res, next) => {
-    if (req.method === "POST") {
-        let endpoint = req.path.substring("/api/".length);
-        let apiFunction = APIS[endpoint];
-        if (apiFunction !== undefined) {
-            await apiFunction(req, res, next, CONFIG);
-        } else {
-            res.redirect("/404");
-        }
+    let endpoint = req.path.substring("/api/".length);
+    let apiFunction = APIS[endpoint];
+    if (apiFunction !== undefined) {
+        await apiFunction(req, res, next, CONFIG);
     } else {
-        res.status(400).end();
+        res.redirect("/404");
     }
 });
 
