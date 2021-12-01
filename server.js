@@ -21,7 +21,7 @@ app.all("/api/*", async (req, res, next) => {
 app.use(express.static("./public", {extensions: ["html"]}));
 
 app.use((req, res, next) => {
-    
+    res.render("/404");
 })
 
 app.listen(CONFIG.HTTP.port, CONFIG.HTTP.host);
