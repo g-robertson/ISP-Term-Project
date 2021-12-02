@@ -6,50 +6,56 @@ export default class IndexPage extends Component {
 		super(props)
 
 		this.state = {
-			titleText: "",
-			timestampText: "",
-			imgSrc: "",
-			bodyText: [],
+			pages: [
+				{
+					titleText: "",
+					timestampText: "",
+					imgSrc: "",
+					bodyText: [],
+				}
+			]
 		}
 	}
 
 	componentDidMount() {
-		fetch('api/nhkpage?date=1638162000000&artnumber=0')
+		let url = new URL(window.location.href);
+		fetch("/api/nhkpage" + (url.search === "" ? (`?date=${new Date().valueOf()}&artnumber=-1`) : url.search))
 			.then(response => {
 				return response.text()
 			})
-      		.then(resultData => {
-				resultData = resultData
-					.replaceAll(/<rt>.*?<\/rt>/g, '')
-					.replaceAll(/<table.*?<\/table>/gs, '')
-					.replaceAll(/<audio.*<\/audio>/g, '')
-					.replaceAll("<ruby>", '')
-					.replaceAll("</ruby>", '')
-					.replaceAll("</p>", '')
-					.replaceAll(/<a.*?>/g, '')
-					.replaceAll("</a>", '');
-				let titleParsed = resultData.split("<h3>").pop().split("</h3>")[0];
-				let timeParsed = resultData.split(/<time.*?>/).pop().split("</time>")[0];
-				let imgParsed = resultData.split("<img src=\"").pop().split("\"")[0];
-				let txtParsed = resultData.split(/<p.*?>/).slice(1);
-        		this.setState({ 
-					titleText: titleParsed,
-					timestampText: timeParsed,
-					imgSrc: imgParsed,
-					bodyText: txtParsed,
-				});
-      	})
+			.then(resultData => {
+				resultData.split("|~|").map(resultText => {
+					resultText = resultText
+						.replaceAll(/<rt>.*?<\/rt>/g, '')
+						.replaceAll(/<table.*?<\/table>/gs, '')
+						.replaceAll(/<audio.*<\/audio>/g, '')
+						.replaceAll("<ruby>", '')
+						.replaceAll("</ruby>", '')
+						.replaceAll("</p>", '')
+						.replaceAll(/<a.*?>/g, '')
+						.replaceAll("</a>", '');
+					let titleParsed = resultText.split("<h3>").pop().split("</h3>")[0];
+					let timeParsed = resultText.split(/<time.*?>/).pop().split("</time>")[0];
+					let imgParsed = resultText.split("<img src=\"").pop().split("\"")[0];
+					let txtParsed = resultText.split(/<p.*?>/).slice(1);
+					this.setState({ 
+						pages: [...this.state.pages, {
+							titleText: titleParsed,
+							timestampText: timeParsed,
+							imgSrc: imgParsed,
+							bodyText: txtParsed,
+						}]
+					});
+				})
+		})
 	}
 
 	render() {
 		return (
 			<Layout
-			title={this.state.titleText}
-			timestamp={this.state.timestampText}
-			img={this.state.imgSrc}
-			text={this.state.bodyText}
+			pages={this.state.pages.slice(1)}
 			>
 		</Layout>
-	)
+		)
 	}
 }

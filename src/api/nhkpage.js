@@ -23,11 +23,27 @@ export async function main(req, res, next, config) {
         return;
     }
     let articles = [...response.matchAll(/<article.*?>((.|\n)*?)<\/article>/g)];
-    let article = articles[articleNumber];
-    if (article === undefined) {
-        res.status(200).send(`There is no ${articleNumber}th article from nhkeasier on ${date.toISOString()}.`).end();
-        return;
+    if (articleNumber === -1) {
+        if (articles.length === 0) {
+            res.status(200).send(`There are no articles from nhkeasier on ${date.toISOString()}.`).end();
+            return;
+        }
+        var mappedArticles = "";
+        for (let i = 0; i < articles.length; ++i) {
+            if (i == 0) {
+                mappedArticles += (articles[i][1]);
+            } else {
+                mappedArticles += ("|~|" + articles[i][1]);
+            }
+        }
+        res.status(200).send(mappedArticles).end();
+    } else {
+        let article = articles[articleNumber];
+        if (article === undefined) {
+            res.status(200).send(`There is no ${articleNumber}th article from nhkeasier on ${date.toISOString()}.`).end();
+            return;
+        }
+        let articleGroup1 = article[1];
+        res.status(200).send(articleGroup1).end();
     }
-    let articleGroup1 = article[1];
-    res.status(200).send(articleGroup1).end();
 }

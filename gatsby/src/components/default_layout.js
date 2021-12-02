@@ -30,6 +30,11 @@ export function toggleId(id, dis) {
 		}
 }
 
+export function updateDate() {
+	let today = new Date();
+	return <p>{(((today.getMonth() > 8) ? (today.getMonth() + 1) : ('0' + (today.getMonth() + 1))) + '-' + ((today.getDate() > 9) ? today.getDate() : ('0' + today.getDate())) + '-' + today.getFullYear())}</p>
+}
+
 const Layout = ({ pageTitle, children }) => {
 	const [value, onChange] = useState(new Date());
 
@@ -62,7 +67,7 @@ const Layout = ({ pageTitle, children }) => {
 							</Link>
 						</div>
 						<div id="curDate" className={date} onClick={() => toggleId("cal", "inline-block")}>
-							<p>11/28/21</p>
+								{updateDate()}
 						</div>
 						<nav>
 							<ul className={navLinks}>
@@ -97,7 +102,11 @@ const Layout = ({ pageTitle, children }) => {
 						onChange={onChange}
 						value={value}
 						maxDate={new Date()}
-						onClickDay={(date) => {window.location.assign(`/api/nhkpage?date=${date.valueOf()}&artnumber=0`)}}
+						onClickDay={(date) => {
+							window.location.assign(`?date=${date.valueOf()}&artnumber=-1`);
+							let newDate = `${date.getMonth()}/${date.getDay()}/${date.getFullYear}`;
+							updateDate(newDate);
+						}}
 					/>
 				</div>
 				<div id="dropLinks" className={drop} style={{display:'none'}}>
