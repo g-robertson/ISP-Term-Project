@@ -4,10 +4,7 @@ import {promisify} from "util";
 
 const MIN_PASSWORD_LENGTH = 8;
 export async function main(req, res, next, config) {
-    if (req.method !== "POST") {
-        res.status(400).end();
-        return;
-    } else if (req.body.name === undefined || req.body.password === undefined) {
+    if (req.body.name === undefined || req.body.password === undefined) {
         res.status(400).end();
         return;
     } else if (req.body.name.length === 0 || req.body.name.length >= 30) {
