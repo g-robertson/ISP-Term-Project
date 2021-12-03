@@ -2,13 +2,7 @@ import {articleIdFromDateAndArtNumber} from "../article-helpers.js";
 import {getNameFromSession} from "../get-name-from-session.js";
 
 export async function main(req, res, next, config) {
-    if (req.method !== "POST") {
-        res.status(400).end();
-        return;
-    } else if (req.cookies["auth-token"] === undefined) {
-        res.status(400).end();
-        return;
-    } else if (req.body.date === undefined || req.body.artnumber === undefined) {
+    if (req.body.date === undefined || req.body.artnumber === undefined) {
         res.status(400).end();
         return;
     }

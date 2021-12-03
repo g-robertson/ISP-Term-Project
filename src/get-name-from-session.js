@@ -1,4 +1,10 @@
-export async function getNameFromSession(req, res, next, config) { 
+export async function getNameFromSession(req, res, next, config) {
+    if (req.method !== "POST") {
+        return undefined;
+    } else if (req.cookies["auth-token"] === undefined) {
+        return undefined;
+    }
+
     const aquery = promisify(config.CONN.query).bind(config.CONN);
     await aquery(`USE ${config.DB}`);
 
