@@ -19,8 +19,7 @@ export function setSrc(src) {
 }
 
 export function setArticleState(id) {
-  var thisBox = document.getElementById(`${id}`);
-  thisBox.checked = (thisBox.checked === "checked" ? "unchecked" : "checked")
+  let thisBox = document.getElementById(id);
   let url = new URL(window.location.href);
   fetch(
     "http://" + url.hostname + ":" + url.port + "/api/setstatereadarticle",
@@ -28,9 +27,9 @@ export function setArticleState(id) {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        date: url.search.split('&')[0].replace('?', ''),
-        artnumber: id,
-        state: (thisBox.checked === "checked" ? "true" : "false"),
+        date: url.search.split('&')[0].replace('?date=', ''),
+        artnumber: thisBox.id,
+        state: thisBox.checked,
       })
     }
   );
@@ -44,7 +43,7 @@ export function getArticleState(id) {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        date: url.search.split('&')[0].replace('?', ''),
+        date: url.search.split('&')[0].replace('?date=', ''),
         artnumber: id,
       })
     }
@@ -52,7 +51,7 @@ export function getArticleState(id) {
     if (response === "true") {
       return "checked";
     } else {
-      return "unchecked";
+      return "";
     }
   });
 }
@@ -96,7 +95,11 @@ export default function articleLayout({
               }
             </div>
             <div className={inputContainer}>
-              <input id={++idCounter} type="checkbox" checked={() => getArticleState(idCounter)} onClick={() => setArticleState(idCounter)}/>
+              <input id={++idCounter} 
+                type="checkbox"
+                onLoad={getArticleState(Number(idCounter))}
+                onClick={(e) => setArticleState(e.target.id)}
+              />
               <p>Mark Article as Read</p>
             </div>
             {children}
