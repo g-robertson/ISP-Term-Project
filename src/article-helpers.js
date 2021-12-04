@@ -2,7 +2,7 @@ import {CONFIG} from "../config.js";
 
 export function articleFromDate(date) {
     let fullYear = date.getFullYear().toString();
-    let fullMonth = date.getMonth().toString();
+    let fullMonth = (date.getMonth() + 1).toString();
     if (fullMonth.length < 2) fullMonth = "0" + fullMonth;
     let fullDate = date.getDate().toString();
     if (fullDate.length < 2) fullDate = "0" + fullDate;
