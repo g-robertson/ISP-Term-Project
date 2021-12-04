@@ -21,7 +21,7 @@ app.use((req, res, next) => {
     for (let key in req.body) {
         req.body[key] = req.body[key].toString();
     }
-    
+
     next();
 });
 
@@ -39,6 +39,10 @@ app.all("/api/*", async (req, res, next) => {
 app.use(express.static("./public", {extensions: ["html"]}));
 
 app.use((req, res, next) => {
+    if (req.url === "/isp/prj/prj.html") {
+        res.redirect("/");
+        return;
+    }
     res.redirect("/404");
 })
 
