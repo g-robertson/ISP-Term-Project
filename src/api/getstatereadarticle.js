@@ -1,9 +1,12 @@
 import {createArticleInDB, articleIdFromDateAndArtNumber} from "../article-helpers.js";
 import {getInfoFromSession} from "../get-info-from-session.js";
+import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
 import {promisify} from "util";
 
 export async function main(req, res, next, config) {
-    if (req.body.date === undefined || req.body.artnumber === undefined) {
+    let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
+    if (date === undefined || artnumber === undefined) {
         res.status(400).end();
         return;
     }
@@ -14,8 +17,7 @@ export async function main(req, res, next, config) {
         return;
     }
 
-    let date = new Date(Number(req.body.date));
-    let articleId = articleIdFromDateAndArtNumber(date, parseInt(req.body.artnumber));
+    let articleId = articleIdFromDateAndArtNumber(date, parseInt(artnumber));
     await createArticleInDB(articleId);
 
     const aquery = promisify(config.CONN.query).bind(config.CONN);

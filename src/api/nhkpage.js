@@ -1,20 +1,21 @@
+import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
 import {articleFromDate} from "../article-helpers.js";
 import {GET_CACHE} from "../getcache.js";
 
 export async function main(req, res, next, config) {
-    if (req.query.date === undefined) {
+    let date = validateClampedDate(req.query.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let artnumber = validateClampedNumber(req.query.artnumber, -1, 99);
+
+    if (date === undefined) {
         res.status(400).end();
         return;
     }
 
-    if (req.query.artnumber === undefined) {
+    if (artnumber === undefined) {
         req.query.artnumber = -1;
     }
 
-    let date = new Date(parseInt(req.query.date));
-    let articleNumber = parseInt(req.query.artnumber);
     let page = articleFromDate(date);
-    
 
     let response = await GET_CACHE.get(page);
     if (response === 404) {
@@ -27,7 +28,7 @@ export async function main(req, res, next, config) {
         return;
     }
     let articles = [...response.matchAll(/<article.*?>((.|\n)*?)<\/article>/g)];
-    if (articleNumber === -1) {
+    if (artnumber === -1) {
         if (articles.length === 0) {
             res.status(200).send(`There are no articles from nhkeasier on ${date.toISOString()}.`).end();
             return;
@@ -42,9 +43,9 @@ export async function main(req, res, next, config) {
         }
         res.status(200).send(mappedArticles).end();
     } else {
-        let article = articles[articleNumber];
+        let article = articles[artnumber];
         if (article === undefined) {
-            res.status(200).send(`There is no ${articleNumber}th article from nhkeasier on ${date.toISOString()}.`).end();
+            res.status(200).send(`There is no ${artnumber}th article from nhkeasier on ${date.toISOString()}.`).end();
             return;
         }
         let articleGroup1 = article[1];
