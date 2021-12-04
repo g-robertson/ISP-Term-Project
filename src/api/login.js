@@ -26,7 +26,6 @@ export async function main(req, res, next, config) {
             res.status(200).send(`This username is taken`).end();
             return;
         }
-
         await aquery(`UPDATE Users SET Token=? WHERE Name=?`, [rndBytes, req.query.name]);
     } else {
         let hash = await bcrypt.hash(req.query.password, 10);
@@ -34,6 +33,6 @@ export async function main(req, res, next, config) {
     }
 
     const ONE_MONTH = 1000 * 60 * 60 * 24 * 30;
-    res.cookie("auth-token", rndBytes.toString("hex"), {httpOnly: true, maxAge: ONE_MONTH});
+    res.cookie("auth-token", rndBytes.toString("hex"), {httpOnly: true, maxAge: ONE_MONTH, secure: true});
     res.status(200).send("User successfully logged in").end();
 }
