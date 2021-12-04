@@ -12,7 +12,7 @@ export async function main(req, res, next, config) {
     let date = new Date(parseInt(req.query.date));
     let articleNumber = parseInt(req.query.artnumber);
     let page = articleFromDate(date);
-    console.log(page);
+    
     let response = await GET_CACHE.get(page);
     if (response === 404) {
         // old no page message
