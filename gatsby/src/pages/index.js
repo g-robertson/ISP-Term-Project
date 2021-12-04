@@ -1,6 +1,22 @@
 import React, { Component } from 'react'
 import Layout from '../components/article_layout'
 
+export async function getArticleState(id) {
+  let url = new URL(window.location.href);
+  let response = await fetch(
+    "http://" + url.hostname + ":" + url.port + "/api/getstatereadarticle",
+    {
+  	  method: "POST",
+  	  headers: {'Content-Type': 'application/json'},
+  	  body: JSON.stringify({
+  	    date: url.search.split('&')[0].replace('?date=', ''),
+  	    artnumber: id,
+  	  })
+    }
+  )
+  return await response.text() === "true";
+}
+
 export default class IndexPage extends Component {
 	constructor(props) {
 		super(props)
@@ -17,9 +33,9 @@ export default class IndexPage extends Component {
 		}
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		let url = new URL(window.location.href);
-		fetch("http://" + url.hostname + ":" + url.port + "/api/nhkpage" + (url.search === "" ? (`?date=${new Date().valueOf()}&artnumber=-1`) : url.search))
+		await fetch("http://" + url.hostname + ":" + url.port + "/api/nhkpage" + (url.search === "" ? (`?date=${new Date().valueOf()}&artnumber=-1`) : url.search))
 			.then(response => {
 				return response.text()
 			})
@@ -46,8 +62,12 @@ export default class IndexPage extends Component {
 							bodyText: txtParsed,
 						}]
 					});
-				})
-		})
+				});
+		});
+
+		for (let articleCheckbox of document.getElementsByClassName("articleCheckbox")) {
+			articleCheckbox.checked = await getArticleState(articleCheckbox.id);
+		}
 	}
 
 	render() {
