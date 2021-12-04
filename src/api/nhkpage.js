@@ -7,13 +7,14 @@ export async function main(req, res, next, config) {
         return;
     }
 
+    if (req.query.artnumber === undefined) {
+        req.query.artnumber = -1;
+    }
+
     let date = new Date(parseInt(req.query.date));
     let articleNumber = parseInt(req.query.artnumber);
     let page = articleFromDate(date);
     
-    if (req.query.artnumber === undefined) {
-        articleNumber = -1;
-    }
 
     let response = await GET_CACHE.get(page);
     if (response === 404) {
