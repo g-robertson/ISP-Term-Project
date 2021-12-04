@@ -1,7 +1,12 @@
 import {CONFIG} from "../config.js";
 
 export function articleFromDate(date) {
-    return `https://nhkeasier.com/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+    let fullYear = date.getFullYear().toString();
+    let fullMonth = date.getMonth().toString();
+    if (fullMonth.length < 2) fullMonth = "0" + fullMonth;
+    let fullDate = date.getDate().toString();
+    if (fullDate.length < 2) fullDate = "0" + fullDate;
+    return `https://nhkeasier.com/${fullYear}/${fullMonth}/${fullDate}`;
 }
 
 export function articleIdFromDateAndArtNumber(date, artnumber) {
