@@ -3,8 +3,9 @@ import {articleFromDate} from "../article-helpers.js";
 import {GET_CACHE} from "../getcache.js";
 
 export async function main(req, res, next, config) {
-    let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
-    let artnumber = validateClampedNumber(req.body.artnumber, -1, 99);
+    let date = validateClampedDate(req.query.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let artnumber = validateClampedNumber(req.query.artnumber, -1, 99);
+    
     if (date === undefined) {
         res.status(400).end();
         return;
