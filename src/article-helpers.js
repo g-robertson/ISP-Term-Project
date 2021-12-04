@@ -11,13 +11,24 @@ export function articleFromDate(date) {
 }
 
 export function articleIdFromDateAndArtNumber(date, artnumber) {
-    // heavily bodged together, each day can only have 8 articles (should be enough)
-    if (artnumber > 8) artnumber = 8;
-    if (artnumber < 0) artnumber = 0;
-    let articleId = ((date.getFullYear() - 2000) * 12 * 32 * 9) + (date.getMonth() * 32 * 9) + (date.getDate() * 9) + artnumber;
-    if (articleId < 0) articleId = 0;
-    if (articleId > 2147483647) articleId = 2147483647;
+    if (artnumber > 99) {
+        artnumber = 99;
+    }
+    let fullYear = date.getFullYear().toString();
+    let fullMonth = (date.getMonth() + 1).toString();
+    if (fullMonth.length < 2) fullMonth = "0" + fullMonth;
+    let fullDate = date.getDate().toString();
+    if (fullDate.length < 2) fullDate = "0" + fullDate;
+    let fullArtNumber = artnumber.toString();
+    if (fullArtNumber.length < 2) fullArtNumber = "0" + fullArtNumber;
+    let articleId = parseInt(`${fullYear}${fullMonth}${fullDate}${fullArtNumber}`);
     return articleId;
+}
+
+export function dateAndArtNumberFromArticleId(articleId) {
+    let date = `${Math.floor(articleId / 1000000)}/${Math.floor((articleId / 10000) % 100)}/${Math.floor((articleId / 100) % 100)}`;
+    let artnumber = Math.floor(articleId % 100);
+    return {date: new Date(date).valueOf(), artnumber: artnumber};
 }
 
 export async function createArticleInDB(articleId) {
