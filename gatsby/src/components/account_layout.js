@@ -8,7 +8,8 @@ import {
 	kanjiEntry,
 	caret,
 	flexer,
-	articleDetails
+	articleDetails,
+    loginButton
 } from '../components/layout.module.css'
 
 export function toggleEntry(id) {
@@ -23,6 +24,11 @@ export function toggleEntry(id) {
 	}
 }
 
+export function submitLogin() {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+}
+
 export default function accountLayout({
   user, kanjiEntries, children
 }) {
@@ -34,17 +40,18 @@ export default function accountLayout({
             </h1>
             <div className={inputBox}>
                 <p>Username: </p>
-                <input type="text" name="username"/>
+                <input type="text" name="username" id="username"/>
             </div>
             <div className={inputBox}>
                 <p>Password: </p>
-                <input type="password" name="password"/>
+                <input type="password" name="password" id="password"/>
             </div>
+            <button className={loginButton} type="button" onClick={() => submitLogin()}>Submit</button>
         </div>
         <div id="accountContent">
             <h1 className={heading}>
                 Welcome, {user}!<br />
-                Kanji You've Seen:
+                Articles You've Read:
             </h1>
             {
                 kanjiEntries.map(currentEntry => (

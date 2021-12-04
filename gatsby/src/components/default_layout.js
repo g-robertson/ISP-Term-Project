@@ -103,7 +103,7 @@ const Layout = ({ pageTitle, children }) => {
 						value={value}
 						maxDate={new Date()}
 						onClickDay={(date) => {
-							window.location.assign(`?date=${date.valueOf()}&artnumber=-1`);
+							window.location.assign(`/?date=${date.valueOf()}&artnumber=-1`);
 							let newDate = `${date.getMonth()}/${date.getDay()}/${date.getFullYear}`;
 							updateDate(newDate);
 						}}

@@ -19,7 +19,7 @@ export default class IndexPage extends Component {
 
 	componentDidMount() {
 		let url = new URL(window.location.href);
-		fetch("/api/nhkpage" + (url.search === "" ? (`?date=${new Date().valueOf()}&artnumber=-1`) : url.search))
+		fetch("http://" + url.hostname + ":" + url.port + "/api/nhkpage" + (url.search === "" ? (`?date=${new Date().valueOf()}&artnumber=-1`) : url.search))
 			.then(response => {
 				return response.text()
 			})
@@ -37,7 +37,7 @@ export default class IndexPage extends Component {
 					let titleParsed = resultText.split("<h3>").pop().split("</h3>")[0];
 					let timeParsed = resultText.split(/<time.*?>/).pop().split("</time>")[0];
 					let imgParsed = resultText.split("<img src=\"").pop().split("\"")[0];
-					let txtParsed = resultText.split(/<p.*?>/).slice(1);
+					let txtParsed = resultText.replaceAll(/<[^p][^\/p].*?>/g, '').split(/<p.*?>/).slice(1);
 					this.setState({ 
 						pages: [...this.state.pages, {
 							titleText: titleParsed,

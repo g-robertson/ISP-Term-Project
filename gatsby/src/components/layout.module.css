@@ -177,3 +177,12 @@ nav {
 .article-details:last-of-type {
 	border-bottom: 2px solid black;
 }
+
+.loginButton {
+	background-color: black;
+	color: #c4c4c4;
+	padding: 5px;
+	cursor: pointer;
+	margin: auto;
+	display: block;
+}
