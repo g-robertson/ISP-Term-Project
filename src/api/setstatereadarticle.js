@@ -28,8 +28,11 @@ export async function main(req, res, next, config) {
 
     let results = await aquery(`SELECT UserName FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
     
+    // unix time in seconds
+    let currentTime = Math.floor(new Date().valueOf() / 1000);
+
     if (read && results.length === 0) {
-        await aquery(`INSERT INTO UserReadArticles VALUES (?, ?);`, [name, articleId]);
+        await aquery(`INSERT INTO UserReadArticles VALUES (?, ?, ?);`, [name, articleId, currentTime]);
     } else if (!read && results.length !== 0) {
         await aquery(`DELETE FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
     }
