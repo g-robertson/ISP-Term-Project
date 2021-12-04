@@ -1,6 +1,6 @@
 import {createArticleInDB, articleIdFromDateAndArtNumber} from "../article-helpers.js";
 import {getInfoFromSession} from "../get-info-from-session.js";
-import {validateDate, validateNumber} from "../validate-primitives.js";
+import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
 import {promisify} from "util";
 
 export async function main(req, res, next, config) {

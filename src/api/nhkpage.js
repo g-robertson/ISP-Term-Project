@@ -1,4 +1,4 @@
-import {validateDate, validateNumber} from "../validate-primitives.js";
+import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
 import {articleFromDate} from "../article-helpers.js";
 import {GET_CACHE} from "../getcache.js";
 
