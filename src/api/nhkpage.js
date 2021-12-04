@@ -2,9 +2,7 @@ import {articleFromDate} from "../article-helpers.js";
 import {GET_CACHE} from "../getcache.js";
 
 export async function main(req, res, next, config) {
-    if (req.query.date === undefined ||
-        req.query.artnumber === undefined
-    ) {
+    if (req.query.date === undefined) {
         res.status(400).end();
         return;
     }
@@ -13,6 +11,10 @@ export async function main(req, res, next, config) {
     let articleNumber = parseInt(req.query.artnumber);
     let page = articleFromDate(date);
     
+    if (req.query.artnumber === undefined) {
+        articleNumber = -1;
+    }
+
     let response = await GET_CACHE.get(page);
     if (response === 404) {
         // old no page message
