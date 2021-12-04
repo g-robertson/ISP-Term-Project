@@ -5,7 +5,8 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "init": "./init.sh"
+    "init": "./init.sh",
+    "initnd": "./initnd.sh"
   },
   "repository": {
     "type": "git",
