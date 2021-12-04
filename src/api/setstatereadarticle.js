@@ -1,9 +1,13 @@
 import {createArticleInDB, articleIdFromDateAndArtNumber} from "../article-helpers.js";
 import {getInfoFromSession} from "../get-info-from-session.js";
+import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
 import {promisify} from "util";
 
 export async function main(req, res, next, config) {
-    if (req.body.date === undefined || req.body.artnumber === undefined || req.body.state === undefined) {
+    let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
+    let state = req.body.state;
+    if (date === undefined || artnumber === undefined || state === undefined) {
         res.status(400).end();
         return;
     }
@@ -14,18 +18,17 @@ export async function main(req, res, next, config) {
         return;
     }
 
-    let date = new Date(Number(req.body.date));
-    let articleId = articleIdFromDateAndArtNumber(date, parseInt(req.body.artnumber));
+    let articleId = articleIdFromDateAndArtNumber(date, artnumber);
     await createArticleInDB(articleId);
-    let state = req.body.state[0] === "t";
+    let read = state[0] === "t";
 
     const aquery = promisify(config.CONN.query).bind(config.CONN);
     await aquery(`USE ${config.DB}`);
 
     let results = await aquery(`SELECT UserName FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
-    if (state && results.length === 0) {
+    if (read && results.length === 0) {
         await aquery(`INSERT INTO UserReadArticles VALUES (?, ?);`, [name, articleId]);
-    } else if (!state && results.length !== 0) {
+    } else if (!read && results.length !== 0) {
         await aquery(`DELETE FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
     }
 

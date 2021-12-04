@@ -11,9 +11,6 @@ export function articleFromDate(date) {
 }
 
 export function articleIdFromDateAndArtNumber(date, artnumber) {
-    if (artnumber > 99) {
-        artnumber = 99;
-    }
     let fullYear = date.getFullYear().toString();
     let fullMonth = (date.getMonth() + 1).toString();
     if (fullMonth.length < 2) fullMonth = "0" + fullMonth;

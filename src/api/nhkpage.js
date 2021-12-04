@@ -1,20 +1,20 @@
+import {validateDate, validateNumber} from "../validate-primitives.js";
 import {articleFromDate} from "../article-helpers.js";
 import {GET_CACHE} from "../getcache.js";
 
 export async function main(req, res, next, config) {
-    if (req.query.date === undefined) {
+    let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let artnumber = validateClampedNumber(req.body.artnumber, -1, 99);
+    if (date === undefined) {
         res.status(400).end();
         return;
     }
 
-    if (req.query.artnumber === undefined) {
+    if (artnumber === undefined) {
         req.query.artnumber = -1;
     }
 
-    let date = new Date(parseInt(req.query.date));
-    let articleNumber = parseInt(req.query.artnumber);
     let page = articleFromDate(date);
-    
 
     let response = await GET_CACHE.get(page);
     if (response === 404) {
