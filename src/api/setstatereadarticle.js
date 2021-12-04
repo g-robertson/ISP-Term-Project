@@ -1,20 +1,21 @@
 import {createArticleInDB, articleIdFromDateAndArtNumber} from "../article-helpers.js";
 import {getInfoFromSession} from "../get-info-from-session.js";
+import {promisify} from "util";
 
 export async function main(req, res, next, config) {
-    if (req.body.date === undefined || req.body.artnumber === undefined) {
+    if (req.body.date === undefined || req.body.artnumber === undefined || req.body.state === undefined) {
         res.status(400).end();
         return;
     }
 
-    let name = (await getInfoFromSession(req, res, next, config)).name;
-    if (user === undefined) {
+    let name = (await getInfoFromSession(req, res, next, config))?.name;
+    if (name === undefined) {
         res.status(200).send("No user session could be found").end();
         return;
     }
 
     let date = new Date(Number(req.body.date));
-    let articleId = articleIdFromDateAndArtNumber(date);
+    let articleId = articleIdFromDateAndArtNumber(date, parseInt(req.body.artnumber));
     await createArticleInDB(articleId);
     let state = req.body.state[0] === "t";
 
