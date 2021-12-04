@@ -7,6 +7,7 @@ export async function main(req, res, next, config) {
     let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
     let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
     let state = req.body.state;
+    
     if (date === undefined || artnumber === undefined || state === undefined) {
         res.status(400).end();
         return;
@@ -26,6 +27,7 @@ export async function main(req, res, next, config) {
     await aquery(`USE ${config.DB}`);
 
     let results = await aquery(`SELECT UserName FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
+    
     if (read && results.length === 0) {
         await aquery(`INSERT INTO UserReadArticles VALUES (?, ?);`, [name, articleId]);
     } else if (!read && results.length !== 0) {

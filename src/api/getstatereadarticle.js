@@ -6,6 +6,7 @@ import {promisify} from "util";
 export async function main(req, res, next, config) {
     let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
     let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
+    
     if (date === undefined || artnumber === undefined) {
         res.status(400).end();
         return;
@@ -17,7 +18,7 @@ export async function main(req, res, next, config) {
         return;
     }
 
-    let articleId = articleIdFromDateAndArtNumber(date, parseInt(artnumber));
+    let articleId = articleIdFromDateAndArtNumber(date, artnumber);
     await createArticleInDB(articleId);
 
     const aquery = promisify(config.CONN.query).bind(config.CONN);

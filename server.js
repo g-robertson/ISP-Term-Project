@@ -13,6 +13,18 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser())
 
+// stringify all possible query or body parameters
+app.use((req, res, next) => {
+    for (let key in req.query) {
+        req.query[key] = req.query[key].toString();
+    }
+    for (let key in req.body) {
+        req.body[key] = req.body[key].toString();
+    }
+    
+    next();
+});
+
 app.all("/api/*", async (req, res, next) => {
     let endpoint = req.path.substring("/api/".length);
     let apiFunction = APIS[endpoint];
