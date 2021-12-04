@@ -1,5 +1,5 @@
-import {articleIdFromDateAndArtNumber} from "../article-helpers.js";
-import {getNameFromSession} from "../get-name-from-session.js";
+import {createArticleInDB, articleIdFromDateAndArtNumber} from "../article-helpers.js";
+import {getInfoFromSession} from "../get-info-from-session.js";
 
 export async function main(req, res, next, config) {
     if (req.body.date === undefined || req.body.artnumber === undefined) {
@@ -7,7 +7,7 @@ export async function main(req, res, next, config) {
         return;
     }
 
-    let name = getNameFromSession(req, res, next, config);
+    let name = (await getInfoFromSession(req, res, next, config)).name;
     if (user === undefined) {
         res.status(200).send("No user session could be found").end();
         return;
@@ -15,7 +15,7 @@ export async function main(req, res, next, config) {
 
     let date = new Date(Number(req.body.date));
     let articleId = articleIdFromDateAndArtNumber(date);
-    createArticleInDB(articleId);
+    await createArticleInDB(articleId);
     let state = req.body.state[0] === "t";
 
     const aquery = promisify(config.CONN.query).bind(config.CONN);
