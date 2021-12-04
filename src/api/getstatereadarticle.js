@@ -23,8 +23,8 @@ export async function main(req, res, next, config) {
 
     let results = await aquery(`SELECT UserName FROM UserReadArticles WHERE UserName=? AND ArticleId=?;`, [name, articleId]);
     if (results.length !== 0) {
-        res.status(200).send("t").end();
+        res.status(200).send("true").end();
     } else {
-        res.status(200).send("f").end();
+        res.status(200).send("false").end();
     }
 }
