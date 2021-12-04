@@ -13,8 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser())
 
-// stringify all possible query or body parameters
 app.use((req, res, next) => {
+    // stringify all possible query or body parameters
     for (let key in req.query) {
         req.query[key] = req.query[key].toString();
     }
