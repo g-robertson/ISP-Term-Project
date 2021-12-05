@@ -58,9 +58,7 @@ const techText = {
 				<p><a href="/isp/prj/ISP-Project-Final-Report.pdf">Final Report</a></p>
 				<p><a href="/isp/prj/ISP-Project-Final-Presentation.ppt">Powerpoint</a></p>
 				<p>Demo Video</p>
-				<video width="500px" height="281px" controls>
-					<source src="" type="video/mp4" />
-				</video>
+				<iframe width="500" height="281" src="https://www.youtube.com/embed/IFfTmo1wpgU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 			</div>
 		</Layout>
 	)
