@@ -47,7 +47,7 @@ const techText = {
 				</p>
 				<p style={infoText}>
 					Feel free to browse JPEZ without an account! However,
-					to begin tracking your kanji on articles, please <Link to="/about">create an account</Link> and
+					to begin tracking your kanji on articles, please <Link to="/account">create an account</Link> and
 					check the "Mark Article As Read" box once you've finished
 					reading an article!
 				</p>
@@ -55,8 +55,8 @@ const techText = {
 			<div style={techText}>
 				For more techical information on how JPEZ works,
 				please reference the items below.<br />
-				<p><a href="../files/ISP-Project-Final-Report.pdf">Final Report</a></p>
-				<p><a href="../files/ISP-Project-Final-Presentation.ppt">Powerpoint</a></p>
+				<p><a href="/isp/prj/ISP-Project-Final-Report.pdf">Final Report</a></p>
+				<p><a href="/isp/prj/ISP-Project-Final-Presentation.ppt">Powerpoint</a></p>
 				<p>Demo Video</p>
 				<video width="500px" height="281px" controls>
 					<source src="" type="video/mp4" />
