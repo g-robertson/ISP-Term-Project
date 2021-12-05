@@ -1,2 +1,2 @@
-.initnd.sh
+./initnd.sh
 node init.js
