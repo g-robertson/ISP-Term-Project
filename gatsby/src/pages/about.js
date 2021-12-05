@@ -54,8 +54,13 @@ const techText = {
 			</div>
 			<div style={techText}>
 				For more techical information on how JPEZ works,
-				please reference the below document.<br />
-				<a href="">technical_document.pdf</a>
+				please reference the items below.<br />
+				<p><a href="../files/ISP-Project-Final-Report.pdf">Final Report</a></p>
+				<p><a href="../files/ISP-Project-Final-Presentation.ppt">Powerpoint</a></p>
+				<p>Demo Video</p>
+				<video width="500px" height="281px" controls>
+					<source src="" type="video/mp4" />
+				</video>
 			</div>
 		</Layout>
 	)
