@@ -40,7 +40,7 @@ app.use(express.static("./public", {extensions: ["html"]}));
 
 app.use((req, res, next) => {
     if (req.url === "/isp/prj/prj.html") {
-        res.redirect("/");
+        res.redirect("/about");
         return;
     }
     res.redirect("/404");

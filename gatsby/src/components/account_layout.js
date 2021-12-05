@@ -4,37 +4,89 @@ import Layout from '../components/default_layout'
 import {
 	heading,
 	inputBox,
-	articleLink,
-	kanjiEntry,
-	caret,
-	flexer,
 	articleDetails,
-    loginButton
+    headsUp,
+    loginButton,
+    errorMsg
 } from '../components/layout.module.css'
 
-export function toggleEntry(id) {
-	let item = document.getElementById(id)
-	let itemDetails = item.querySelector("#details");
-	if (itemDetails.style.display === 'none') {
-		itemDetails.style.display = 'block';
-		item.querySelector("#caret").textContent = "▲"
-	} else {
-		itemDetails.style.display = 'none';
-		item.querySelector("#caret").textContent = "▼"
-	}
+function getFormattedDate(date) {
+    var year = date.getFullYear();
+  
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+  
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+    
+    return month + '/' + day + '/' + year;
+}
+
+function insertAfter(referenceNode, newNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+  
+
+function greetUser(username, url) {
+    document.getElementById("errorMessage").textContent = "";
+    document.getElementById("login").remove();
+    document.getElementById("userGreeting").textContent = "Welcome, " + username + "!\nArticles You've Read:";
+    fetch("http://" + url.hostname + ":" + url.port + "/api/getuserreadarticles?name=" + username).then(async response => {
+        const articles = await response.json();
+        let contentTitle = document.getElementById("accountContent");
+        contentTitle.innerHTML = 
+            "<p style='font-weight: bold;'>Date Article Clicked:</p><p style='font-weight: bold;'>Date Article Posted:</p>";
+        articles.map(article => {
+            let articleClick = getFormattedDate(new Date(article.timestamp));
+            let articleDate = getFormattedDate(new Date(article.date));
+            let entry = contentTitle.cloneNode(true);
+            entry.innerHTML = `<p>${articleClick}</p>
+                <p>
+                    <a href="/?date=${article.date}&artnumber=${article.artnumber}">
+                        ${articleDate}/${article.artnumber}
+                    </a>
+                </p>`;
+            insertAfter(contentTitle, entry);
+        })
+    });
 }
 
 export function submitLogin() {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
+    let url = new URL(window.location.href);
+    fetch(
+        "http://" + url.hostname + ":" + url.port + "/api/getuserinfo",
+        {
+          method: "POST",
+          headers: {'Content-Type': 'application/json'},
+        }
+    ).then(async response => {
+        const userInfo = await response.json();
+        if (userInfo.name && username === "" && password === "") {
+            greetUser(userInfo.name, url);
+        } else {
+                fetch("http://" + url.hostname + ":" + url.port + "/api/login?name=" + username + "&password=" + password).then(async response => {
+                const msg = await response.text();
+                if (msg === "User successfully logged in") {
+                    greetUser(username, url);
+                }
+                else {
+                    document.getElementById("errorMessage").textContent = msg;
+                }
+            });
+        }
+    })
 }
+    
 
 export default function accountLayout({
-  user, kanjiEntries, children
+  children
 }) {
   return (
     <Layout>
         <div id="login">
+        <p className={headsUp}>If you've already logged-in once this session, just press "Submit" with both fields empty.</p>
             <h1 className={heading}>
                 Login
             </h1>
@@ -48,46 +100,10 @@ export default function accountLayout({
             </div>
             <button className={loginButton} type="button" onClick={() => submitLogin()}>Submit</button>
         </div>
-        <div id="accountContent">
-            <h1 className={heading}>
-                Welcome, {user}!<br />
-                Articles You've Read:
-            </h1>
-            {
-                kanjiEntries.map(currentEntry => (
-                    <div id={currentEntry.kanji} onClick={() => toggleEntry(currentEntry.kanji)}>
-                        <div className={kanjiEntry}>
-                            <p>
-                                {currentEntry.kanji}
-                            </p>
-                            <span className={flexer}>
-                                <p>
-                                    {currentEntry.count.toString() + " Times"}
-                                </p>
-                                <p id="caret" className={caret}>
-                                    ▼
-                                </p>
-                            </span>
-                        </div>
-                        <div id="details" style={{display:'none'}}>
-                            {
-                                currentEntry.articles.map(articleEntry => (
-                                    <div className={articleDetails}>
-                                        <p>
-                                            {articleEntry.checkedDate}
-                                        </p>
-                                        <p>
-                                            <Link to={articleEntry.articleLink.toString()} className={articleLink}>
-                                                {articleEntry.articleLink.toString()}
-                                            </Link>
-                                        </p>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
-                ))
-            }
+        <p id="errorMessage" className={errorMsg}></p>
+        <h1 id="userGreeting" className={heading}>
+        </h1>
+        <div id="accountContent" className={articleDetails}>
         </div>
         {children}
     </Layout>

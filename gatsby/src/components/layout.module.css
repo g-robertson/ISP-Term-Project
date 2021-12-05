@@ -149,33 +149,9 @@ nav {
 	color: black;
 }
 
-.kanji-entry {
-	font-size: 24px;
-	display: flex;
-	justify-content: space-between;
-	cursor: pointer;
-}
-
-.caret {
-	font-size: 21px;
-	padding-left: 10px;
-}
-
-.flexer {
-	display: flex;
-}
-
 .article-details {
 	display: flex;
 	justify-content: space-between;
-}
-
-.article-details:first-of-type {
-	border-top: 2px solid black;
-}
-
-.article-details:last-of-type {
-	border-bottom: 2px solid black;
 }
 
 .loginButton {
@@ -185,4 +161,16 @@ nav {
 	cursor: pointer;
 	margin: auto;
 	display: block;
+}
+
+.error-msg {
+	margin: 50px auto 50px auto;
+	font-size: 18px;
+	text-align: center;
+	color: red;
+}
+
+.heads-up {
+	text-align: center;
+	padding-bottom: 20px;
 }
