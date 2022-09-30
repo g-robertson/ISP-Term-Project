@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "init": "./init.sh",
-    "initnd": "./initnd.sh"
+    "initnd": "./initnd.sh",
+    "start": "docker build -t jpez . && docker rm -f jpez && docker run -dp 127.0.0.1:8080:8080 --name jpez jpez"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,8 @@
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.1",
-    "mysql2": "^2.3.3",
-    "node-fetch": "^3.1.0"
+    "fs-extra": "^10.1.0",
+    "node-fetch": "^3.1.0",
+    "pg": "^8.8.0"
   }
 }

@@ -1,43 +1,11 @@
-export function validateClampedDate(str, lower, upper) {
-    let date = validateDate(str);
-    if (date === undefined) {
-        return undefined;
+export function validateClampedDate(date, lower, upper) {
+    if (!(date instanceof Date) || date < lower || date > upper) {
+        throw `Invalid date ${date} with regard to clamps [${lower}, ${upper}]`;
     }
-    if (date < lower) {
-        return lower;
-    }
-    if (date > upper) {
-        return upper;
-    }
-    return date;
 }
 
-export function validateDate(str) {
-    let date = new Date(validateNumber(str));
-    if (isNaN(date.valueOf())) {
-        return undefined;
+export function validateClampedNumber(number, lower, upper) {
+    if (typeof(number) !== "number" || number < lower || number > higher) {
+        throw `Invalid number ${number} with regard to clamps [${lower}, ${upper}]`;
     }
-    return date;
-}
-
-export function validateClampedNumber(str, lower, upper) {
-    let num = validateNumber(str);
-    if (num === undefined) {
-        return undefined;
-    }
-    if (num < lower) {
-        return lower;
-    }
-    if (num > upper) {
-        return upper;
-    }
-    return num;
-}
-
-export function validateNumber(str) {
-    let num = Number(str);
-    if (isNaN(num)) {
-        return undefined;
-    }
-    return num;
 }

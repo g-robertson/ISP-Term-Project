@@ -1,7 +1,5 @@
 ### How to use
 
-- Install node.js if not already installed on your machine
-- ```git clone``` the repository
 - Create dbuser.js with the line ```export const dbuser = "YOURDBUSERHERE";```
 - Create dbpassword.js with the line ```export const dbpassword = "YOURDBPASSWORDHERE";```
 - Type ```npm run init``` in the directory you cloned the project into to initialize any non-web-server needs (e.g. DB server, building gatsby pages)

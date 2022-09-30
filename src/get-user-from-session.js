@@ -1,6 +1,7 @@
 import {promisify} from "util"
 
-export async function getInfoFromSession(req, res, next, config) {
+export async function getUserFromSession(req, res, next, config) {
+    throw "no db impl'd";
     if (req.method !== "POST") {
         return undefined;
     } else if (req.cookies["auth-token"] === undefined) {

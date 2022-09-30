@@ -1,8 +1,7 @@
 import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
-import {articleFromDate} from "../article-helpers.js";
-import {GET_CACHE} from "../getcache.js";
 
 export async function main(req, res, next, config) {
+    throw "no db impl'd and no scraping allowed";
     let date = validateClampedDate(req.query.date, new Date("2000/01/01"), new Date("9999/12/30"));
     let artnumber = validateClampedNumber(req.query.artnumber, -1, 99);
 
@@ -15,7 +14,8 @@ export async function main(req, res, next, config) {
         req.query.artnumber = -1;
     }
 
-    let page = articleFromDate(date);
+
+    // let page = articleFromDate(date);
 
     let response = await GET_CACHE.get(page);
     if (response === 404) {
