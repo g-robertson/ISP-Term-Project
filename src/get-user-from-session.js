@@ -1,6 +1,6 @@
-import {promisify} from "util"
+const {promisify} = require("util")
 
-export async function getUserFromSession(req, res, next, config) {
+module.exports.getUserFromSession = async function(req, res, next, config) {
     throw "no db impl'd";
     if (req.method !== "POST") {
         return undefined;

@@ -1,8 +1,8 @@
-import express from "express";
-import cookieParser from "cookie-parser";
+const express = require("express");
+const cookieParser = require("cookie-parser");
 
-import {CONFIG} from "./config.js"
-import {getAllAPIs} from "./src/helpers.js";
+const {CONFIG} = require("./config.js");
+const {getAllAPIs} = require("./src/helpers.js");
 
 async function main() {
     const APIS = await getAllAPIs();
@@ -38,11 +38,12 @@ async function main() {
     for (let statusCodeResponse of STATUS_CODE_RESPONSES) {
         app.all(`/${statusCodeResponse}`, async (req, res, next) => {
             res.status(statusCodeResponse);
+            next();
         })
     }
 
     // make root dir public for app, and set default extension to html
-    app.use(express.static("./src/public", {extensions: ["html"]}));
+    app.use(express.static("./public", {extensions: ["html"]}));
     
     app.use((req, res, next) => {
         res.redirect("/404");

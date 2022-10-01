@@ -1,9 +1,9 @@
-import * as bcrypt from "bcrypt"
-import { randomBytes } from "crypto";
-import {promisify} from "util";
+const { randomBytes } = require("crypto");
+const {promisify} = require("util");
 
 const MIN_PASSWORD_LENGTH = 8;
-export async function main(req, res, next, config) {
+module.exports.main = async function(req, res, next, config) {
+    throw "no db impl'd";
     if (req.query.name === undefined || req.query.password === undefined) {
         res.status(400).end();
         return;

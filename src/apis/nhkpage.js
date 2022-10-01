@@ -1,6 +1,6 @@
-import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
+const {validateClampedDate, validateClampedNumber} = require("../validate-primitives.js");
 
-export async function main(req, res, next, config) {
+module.exports.main = async function(req, res, next, config) {
     throw "no db impl'd and no scraping allowed";
     let date = validateClampedDate(req.query.date, new Date("2000/01/01"), new Date("9999/12/30"));
     let artnumber = validateClampedNumber(req.query.artnumber, -1, 99);

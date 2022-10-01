@@ -1,16 +1,13 @@
-import {readdirSync} from "fs"
-import { dirname } from "path";
+const {readdirSync} = require("fs")
 
-const __dirname = dirname(decodeURI(import.meta.url.substring('file://'.length)));
-
-export async function getAllAPIs() {
-    let apiFiles = readdirSync(`${__dirname}/api`);
+module.exports.getAllAPIs = async function() {
+    let apiFiles = readdirSync(`${__dirname}/apis`);
     let apis = {};
     for (let apiFile of apiFiles) {
         if (apiFile === "API_IMPL.md") continue;
 
         let apiName = apiFile.substring(0, apiFile.length - ".js".length);
-        apis[apiName] = (await import(`./api/${apiFile}`)).main;
+        apis[apiName] = (await import(`./apis/${apiFile}`)).main;
     }
     return apis;
 }

@@ -1,11 +1,11 @@
 /* set-state-read-article */
 /*
-import {createArticleInDB, articleIdFromDateAndArtNumber} from "../article-helpers.js";
-import {getInfoFromSession} from "../get-info-from-session.js";
-import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
-import {promisify} from "util";
+const {createArticleInDB, articleIdFromDateAndArtNumber} = require("../article-helpers.js");
+const {getInfoFromSession} = require("../get-info-from-session.js");
+const {validateClampedDate, validateClampedNumber} = require("../validate-primitives.js");
+const {promisify} = require("util");
 
-export async function main(req, res, next, config) {
+module.exports.main = async function(req, res, next, config) {
     let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
     let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
     let state = req.body.state;

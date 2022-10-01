@@ -1,10 +1,10 @@
 /* get-state-read-article.js */
 /*
-import {getInfoFromSession} from "../get-user-from-session.js";
-import {validateClampedDate, validateClampedNumber} from "../validate-primitives.js";
-import {promisify} from "util";
+const {getInfoFromSession} = require("../get-user-from-session.js");
+const {validateClampedDate, validateClampedNumber} = require("../validate-primitives.js");
+const {promisify} = require("util");
 
-export async function main(req, res, next, config) {
+module.exports.main = async function(req, res, next, config) {
     throw "no db impl'd";
     let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
     let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
@@ -32,10 +32,10 @@ export async function main(req, res, next, config) {
 */
 /* get-user-read-article.js */
 /*
-import {promisify} from "util";
-import {dateAndArtNumberFromArticleId} from "../article-helpers.js";
+const {promisify} = require("util");
+const {dateAndArtNumberFromArticleId} = require("../article-helpers.js");
 
-export async function main(req, res, next, config) {
+module.exports.main = async function(req, res, next, config) {
     if (req.query.name === undefined) {
         res.status(400).end();
         return;
