@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const serveStatic = require("serve-static");
 
 const {CONFIG} = require("./config.js");
 const {getAllAPIs} = require("./src/helpers.js");
@@ -43,8 +44,7 @@ async function main() {
     }
 
     // make root dir public for app, and set default extension to html
-    app.use(express.static("./public", {extensions: ["html"]}));
-    
+    app.use(serveStatic("public", {index: ["index.html", "index.htm"]}));
     app.use((req, res, next) => {
         res.redirect("/404");
     })

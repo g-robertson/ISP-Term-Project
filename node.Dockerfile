@@ -10,10 +10,11 @@ COPY package.json /www/package.json
 RUN npm install
 
 # Compile the gatsby pages
-ADD ./src/components /www/src
-ADD ./src/pages /www/src
-ADD ./src/images /www/src
+ADD ./src/components /www/src/components
+ADD ./src/pages /www/src/pages
+ADD ./src/images /www/src/images
 RUN gatsby build
 
 # Add the rest
+RUN cd public && ls
 ADD . /www

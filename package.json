@@ -9,13 +9,16 @@
     "initnd": "./initnd.sh",
     "build-postgres": "docker build -t jpez-postgres -f postgres.Dockerfile .",
     "kill-postgres": "docker rm -f jpez-postgres || true",
-    "run-postgres": "docker run -e POSTGRES_USER_FILE=credentials/user -e POSTGRES_PASSWORD_FILE=/credentials/password -e POSTGRES_DB_FILE=/credentials/db -dp 127.0.0.1:5432:5432 --name jpez-postgres jpez-postgres",
+    "run-postgres": "docker run -e POSTGRES_USER_FILE=/credentials/user -e POSTGRES_PASSWORD_FILE=/credentials/password -e POSTGRES_DB_FILE=/credentials/db -dp 127.0.0.1:5432:5432 --name jpez-postgres jpez-postgres",
     "start-postgres": "npm run build-postgres && npm run kill-postgres && npm run run-postgres",
     "build-node": "docker build -t jpez-node -f node.Dockerfile .",
     "kill-node": "docker rm -f jpez-node || true",
-    "run-node": "docker run -p 127.0.0.1:8080:8080 --name jpez-node jpez-node",
+    "run-node": "docker run -dp 127.0.0.1:8080:8080 --name jpez-node jpez-node",
+    "run-headed-node": "docker run -p 127.0.0.1:8080:8080 --name jpez-node jpez-node",
     "start-node": "npm run build-node && npm run kill-node && npm run run-node",
+    "start-headed-node": "npm run build-node && npm run kill-node && npm run run-headed-node",
     "start": "npm run start-postgres && npm run start-node",
+    "start-headed": "npm run start-postgres && npm run start-headed-node",
     "kill": "npm run kill-postgres && npm run kill-node"
   },
   "repository": {
@@ -40,6 +43,7 @@
     "pg": "^8.8.0",
     "react": "^18.2.0",
     "react-calendar": "^3.9.0",
-    "react-helmet": "^6.1.0"
+    "react-helmet": "^6.1.0",
+    "serve-static": "^1.15.0"
   }
 }
