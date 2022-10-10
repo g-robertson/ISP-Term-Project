@@ -14,6 +14,7 @@ RUN npm install
 ADD ./src/components /www/src/components
 ADD ./src/pages /www/src/pages
 ADD ./src/images /www/src/images
+ADD ./gatsby-config.js /www/gatsby-config.js
 RUN gatsby build
 
 # Add the rest
