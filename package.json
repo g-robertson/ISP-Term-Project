@@ -7,11 +7,10 @@
   "scripts": {
     "init": "./init.sh",
     "initnd": "./initnd.sh",
-    "populate-postgres": "docker exec -it jpez-postgres psql -d jpez -a -f ./scripts/db/jpez_db.sql",
     "build-postgres": "docker build -t jpez-postgres -f Dockerfile.postgres .",
     "kill-postgres": "docker rm -f jpez-postgres || true",
     "run-postgres": "docker run -e POSTGRES_USER_FILE=/credentials/user -e POSTGRES_PASSWORD_FILE=/credentials/password -e POSTGRES_DB_FILE=/credentials/db -dp 127.0.0.1:5432:5432 --name jpez-postgres jpez-postgres",
-    "start-postgres": "npm run build-postgres && npm run kill-postgres && npm run run-postgres && sleep 3 && npm run populate-postgres",
+    "start-postgres": "npm run build-postgres && npm run kill-postgres && npm run run-postgres",
     "node-init": "docker build -t jpez-node-init -f Dockerfile.node-init . && docker rm -f jpez-node-init && docker create --name jpez-node-init jpez-node-init && docker cp jpez-node-init:/node-init build/",
     "build-node": "npm run node-init && docker build -t jpez-node -f Dockerfile.node .",
     "kill-node": "docker rm -f jpez-node || true",
