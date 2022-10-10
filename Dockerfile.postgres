@@ -3,3 +3,4 @@ FROM postgres:14.5
 EXPOSE 5432
 
 ADD test-credentials credentials
+ADD ./scripts/db/jpez_db.sql ./scripts/db/jpez_db.sql
