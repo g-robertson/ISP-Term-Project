@@ -1,0 +1,26 @@
+@startuml
+
+rectangle Users
+Users-[dashed]u-(User_Id): serial int
+Users-[dashed]u-(Username): varchar(32)
+Users-[dashed]u-(Password_Hash): char(60)
+Users-[dashed]u-(Session_Token): char(128)
+
+hexagon ReadArticles
+
+rectangle Articles
+Articles-[dashed]u-(Article_Id): serial int
+Articles-[dashed]u-(Title): "varchar(400)"
+Articles-[dashed]u-(Publish_Date): date
+Articles-[dashed]u-(Placement): int
+Articles-[dashed]u-(Content_Path): "char(16)"
+
+hexagon ArticleKeywordLookups
+ArticleKeywordLookups-[dashed]u-(Keyword): "varchar(20)"
+
+
+Users-r-ReadArticles
+ReadArticles-r->Articles
+
+Articles->ArticleKeywordLookups
+@enduml
