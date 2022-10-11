@@ -17,13 +17,13 @@ CREATE TABLE Articles
 
 CREATE TABLE ReadArticles
 (
-  User_ID INT REFERENCES Users(UserID),
-  Article_ID INT REFERENCES Articles(ArticleID)
+  User_ID INT REFERENCES Users(User_ID),
+  Article_ID INT REFERENCES Articles(Article_ID)
 );
 
 CREATE TABLE ArticleStats
 (
-  Article_ID INT REFERENCES Articles(ArticleID),
+  Article_ID INT REFERENCES Articles(Article_ID),
   Kanji_Count INT,
   Kanji VARCHAR(1000)
 );

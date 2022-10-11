@@ -5,5 +5,5 @@ RUN apk add graphviz ttf-dejavu plantuml
 RUN mkdir build-docs
 
 # Gathers only the dependencies of package.json so that docker npm install will only re-run on dependency change, not script change, etc.
-ADD ./diagrams /diagrams
+ADD ./src/diagrams /diagrams
 RUN plantuml /diagrams/db.puml -o/build-docs
