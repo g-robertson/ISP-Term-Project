@@ -7,7 +7,6 @@ const {getAllAPIs} = require("./src/helpers.js");
 
 async function main() {
     const APIS = await getAllAPIs();
-
     const app = express();
     
     
@@ -26,7 +25,10 @@ async function main() {
         if (apiFunction !== undefined) {
             try {
                 await apiFunction(req, res, next, CONFIG);
-            } catch {
+            } catch(err) {
+                console.log(`Warning: API function ${endpoint} threw error:`);
+                console.log(err);
+
                 res.status(400).end();
             }
         } else {
@@ -49,8 +51,11 @@ async function main() {
         res.redirect("/404");
     })
     
-    app.listen(CONFIG.HTTP.PORT, CONFIG.HTTP.HOST);
+    const server = app.listen(CONFIG.HTTP.PORT, CONFIG.HTTP.HOST);
 
+    server.on('close', async () => {
+        await endDatabaseConnection();
+    });
     console.log(`Server actively running on ${CONFIG.HTTP.HOST}:${CONFIG.HTTP.PORT}`);
 }
 
