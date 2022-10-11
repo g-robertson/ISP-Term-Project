@@ -7,6 +7,7 @@
   "scripts": {
     "init": "./init.sh",
     "initnd": "./initnd.sh",
+    "build-docs": "docker build -t jpez-docs -f Dockerfile.docs . && docker rm -f jpez-docs && docker create --name jpez-docs jpez-docs && docker cp -a jpez-docs:/build-docs .",
     "build-postgres": "docker build -t jpez-postgres -f Dockerfile.postgres .",
     "kill-postgres": "docker rm -f jpez-postgres || true",
     "run-postgres": "docker run -e POSTGRES_USER_FILE=/credentials/user -e POSTGRES_PASSWORD_FILE=/credentials/password -e POSTGRES_DB_FILE=/credentials/db -dp 127.0.0.1:5432:5432 --name jpez-postgres jpez-postgres",
