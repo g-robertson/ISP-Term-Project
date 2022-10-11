@@ -16,8 +16,8 @@ Articles-[dashed]u-(**Placement**): int
 Articles-[dashed]u-(**Content_Path**): "char(16)"
 
 hexagon ArticleKeywordLookups
-ArticleKeywordLookups-[dashed]u-(~~**KeywordId**~~): "serial smallint"
 ArticleKeywordLookups-[dashed]u-(**Keyword**): "varchar(20)"
+ArticleKeywordLookups-[dashed]u-(**Keyword_Count**): "smallint"
 
 
 Users-r-ReadArticles
