@@ -51,12 +51,12 @@ async function main() {
         res.redirect("/404");
     })
     
-    const server = app.listen(CONFIG.HTTP.PORT, CONFIG.HTTP.HOST);
+    const server = app.listen(CONFIG.HTTP.port, CONFIG.HTTP.host);
 
     server.on('close', async () => {
         await endDatabaseConnection();
     });
-    console.log(`Server actively running on ${CONFIG.HTTP.HOST}:${CONFIG.HTTP.PORT}`);
+    console.log(`Server actively running on ${CONFIG.HTTP.host}:${CONFIG.HTTP.port}`);
 }
 
 main();

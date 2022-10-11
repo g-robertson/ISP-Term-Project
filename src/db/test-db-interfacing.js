@@ -1,4 +1,5 @@
 const pg = require('pg');
+const {CONFIG} = require("../../config.js");
 
 let CLIENT;
 
@@ -7,15 +8,10 @@ module.exports.client = async function() {
         return CLIENT;
     }
 
-    CLIENT = new pg.Client({
-        database: "jpez",
-        host: "jpez-postgres",
-        user: "root",
-        password: "testpw",
-        port: 5432
-    });
+    CLIENT = new pg.Client(CONFIG.SQL);
 
     try {
+        console.log(CONFIG.SQL);
         await CLIENT.connect();
     } catch (err) {
         console.log(err);
