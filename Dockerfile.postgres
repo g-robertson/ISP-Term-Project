@@ -3,4 +3,4 @@ FROM postgres:14.5
 EXPOSE 5432
 
 ADD test-credentials credentials
-ADD ./scripts/db/jpez_db.sql /docker-entrypoint-initdb.d/dump.sql
+COPY ./scripts/db /docker-entrypoint-initdb.d/
