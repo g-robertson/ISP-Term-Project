@@ -18,7 +18,8 @@ CREATE TABLE Articles
 CREATE TABLE ReadArticles
 (
   User_ID INT REFERENCES Users(User_ID),
-  Article_ID INT REFERENCES Articles(Article_ID)
+  Article_ID INT REFERENCES Articles(Article_ID),
+  new_field INT
 );
 
 CREATE TABLE ArticleStats

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file="/docker-entrypoint-initdb.d/dump.pgdata"
+file="/docker-entrypoint-initdb.d/postgres-dump.pgdata"
 dbname=jpez
 
 echo "Restoring DB using $file"
