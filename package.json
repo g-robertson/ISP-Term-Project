@@ -9,6 +9,7 @@
     "build-postgres": "./dockers/postgres-build.sh",
     "clean-postgres": "./dockers/postgres-clean.sh",
     "dump-postgres": "./dockers/postgres-dump.sh",
+    "enter-postgres": "./dockers/postgres-enter.sh",
     "kill-postgres": "./dockers/postgres-kill.sh",
     "run-postgres": "./dockers/postgres-run.sh headless",
     "run-headed-postgres": "./dockers/postgres-run.sh",

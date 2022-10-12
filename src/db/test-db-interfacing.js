@@ -11,7 +11,6 @@ module.exports.client = async function() {
     CLIENT = new pg.Client(CONFIG.SQL);
 
     try {
-        console.log(CONFIG.SQL);
         await CLIENT.connect();
     } catch (err) {
         console.log(err);
@@ -22,6 +21,10 @@ module.exports.client = async function() {
 }
 
 module.exports.query = async function(text, values) {
+    if (values === undefined) {
+        values = [];
+    }
+
     return await (await module.exports.client()).query(text, values);
 }
 

@@ -4,11 +4,14 @@ const serveStatic = require("serve-static");
 
 const {CONFIG} = require("./config.js");
 const {getAllAPIs} = require("./src/helpers.js");
+const {insertArticles, insertArticlesKeywords} = require("./src/data-collection/collect-articles.js");
 
 async function main() {
     const APIS = await getAllAPIs();
+    await insertArticles();
+    await insertArticlesKeywords();
+
     const app = express();
-    
     
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
