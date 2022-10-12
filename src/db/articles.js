@@ -15,7 +15,7 @@ module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPa
         throw "Attempted to retrieve an article by content path with a non-string content path";
     }
 
-    return await client.manyOrNone("SELECT Keyword_Length, Keywords_Of_Length_Count FROM ArticleHasKeywordsOfLength WHERE Article_ID=("
+    return await client.manyOrNone("SELECT Keyword_Length, Keywords_Count FROM ArticleKeywordsOfLength WHERE Article_ID=("
                           + "SELECT Article_ID FROM Articles WHERE Content_Path=$1"
                       + ");", [contentPath]
     );

@@ -35,22 +35,22 @@ CREATE TABLE ArticleKeywords
     PRIMARY KEY (Article_ID, Keyword)
 );
 
-CREATE TABLE ArticleHasKeywordsOfLength
+CREATE TABLE ArticleKeywordsOfLength
 (
     Article_ID SMALLINT REFERENCES Articles(Article_ID),
     Keyword_Length INT,
-    Keywords_Of_Length_Count INT,
+    Keywords_Count INT,
 
     PRIMARY KEY (Article_ID, Keyword_Length)
 );
 
 CREATE FUNCTION Sum_Keywords() RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO ArticleHasKeywordsOfLength(Article_ID, Keyword_Length, Keywords_Of_Length_Count)
+        INSERT INTO ArticleKeywordsOfLength(Article_ID, Keyword_Length, Keywords_Count)
             VALUES(NEW.Article_ID, LENGTH(NEW.Keyword), 0) ON CONFLICT DO NOTHING;
 
-        UPDATE ArticleHasKeywordsOfLength
-            SET Keywords_Of_Length_Count = NEW.Keyword_Count + Keywords_Of_Length_Count
+        UPDATE ArticleKeywordsOfLength
+            SET Keywords_Count = NEW.Keyword_Count + Keywords_Count
             WHERE Article_ID = NEW.Article_ID AND Keyword_Length = LENGTH(NEW.Keyword);
         
         RETURN NEW;
@@ -64,8 +64,8 @@ CREATE TRIGGER ArticleKeywordInsertion
 
 CREATE FUNCTION Unsum_Keywords() RETURNS TRIGGER AS $$
     BEGIN
-        UPDATE ArticleHasKeywordsOfLength
-            SET Keywords_Of_Length_Count = Keywords_Of_Length_Count - OLD.Keyword_Count
+        UPDATE ArticleKeywordsOfLength
+            SET Keywords_Count = Keywords_Count - OLD.Keyword_Count
             WHERE Article_ID = OLD.Article_ID AND Keyword_Length = LENGTH(OLD.Keyword);
 
         RETURN OLD;

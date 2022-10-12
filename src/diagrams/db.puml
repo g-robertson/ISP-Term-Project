@@ -1,35 +1,38 @@
 @startuml
 
-rectangle Users
-Users-[dashed]u-(~~**User_Id**~~): "serial"
-Users-[dashed]u-(~~**Username**~~~): varchar(30)
-Users-[dashed]u-(**Password_Hash**): char(60)
-Users-[dashed]u-(Session_Token): char(128)
+object Users {
+  **User_ID** : serial PK
+  **Username**: varchar(30) PK2
+  **Password_Hash**: char(60)
+  Session_Token: char(128)
+}
 
-hexagon ReadArticles
+object Articles {
+  **Article_ID**: smallserial PK
+  **Title**: varchar(400)
+  **Publish_Date**: date PK2
+  **Placement**: smallint PK2
+  **Content_Path**: varchar(200) PK3
+  **Content_Length**: int
+}
 
-rectangle Articles
-Articles-[dashed]u-(~~**Article_Id**~~): "smallserial"
-Articles-[dashed]u-(**Title**): "varchar(400)"
-Articles-[dashed]u-(~~**Publish_Date**~~~): date
-Articles-[dashed]u-(~~**Placement**~~~): int
-Articles-[dashed]u-(~~**Content_Path**~~~~): "char(16)"
-Articles-[dashed]u-(**Content_Length**): int
+object ArticleKeywordLookups {
+  **Article_Id**: FK(Articles(Article_ID)) PK
+  **Keyword**: varchar(20) PK
+  **Keyword_Count**: smallint
+}
 
-hexagon ArticleKeywordLookups
-ArticleKeywordLookups-[dashed]u-(**Keyword**): "varchar(20)"
-ArticleKeywordLookups-[dashed]u-(**Keyword_Count**): "smallint"
+diamond diaArticleKeywordsOfLength
+object ArticleKeywordsOfLength {
+  **Article_ID**: FK(Articles(Article_ID)) PK
+  **Keyword_Length**: Theoretical FK(\n  LENGTH(ArticleKeywordLookups.Keyword)\n  WHERE ArticleKeywordLookups.Article_ID = this.Article_ID\n) PK
+  **Keywords_Count**: Computed(\n  SUM(ArticleKeywordLookups.Keyword_Count)\n  WHERE ArticleKeywordLookups.Article_ID = this.Article_ID\n  AND LENGTH(ArticleKeywordLookups.Keyword) = this.Keyword_Length\n) 
+}
 
-hexagon ArticleHasKeywordsOfLength
-ArticleHasKeywordsOfLength-[dashed]u-(**Keyword_Length**)
-ArticleHasKeywordsOfLength-[dashed]r-(**Keywords_Of_Length_Count**)
+Users->Articles: Read Articles
 
-Users-r-ReadArticles
-ReadArticles-r->Articles
-
-Articles-r->ArticleKeywordLookups
-Articles-r->ArticleHasKeywordsOfLength
-
-ArticleHasKeywordsOfLength-[dashed]d->ArticleKeywordLookups: Trigger sum of Keyword_Count where length(Keyword) = Keyword_Length stored in Keywords_Of_Length_Count
-
+Articles->ArticleKeywordLookups: Has Keyword Lookups
+Articles-d-->diaArticleKeywordsOfLength: Has Number of Keywords of Length
+diaArticleKeywordsOfLength-d->ArticleKeywordsOfLength
+diaArticleKeywordsOfLength-u-->ArticleKeywordLookups: Has Sum Equal to\nnumber of Keywords with Keyword_Length\nthat correspond to Article_Id
 @enduml
