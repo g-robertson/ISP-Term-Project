@@ -8,6 +8,7 @@ const KEYWORD_LENGTH = 20;
 let readArticles = {};
 
 const TOTAL_ARTICLES = 200;
+const ARTICLE_COLLATION = 20;
 let articles = fs.readdirSync(COLLECTION_DIR).reverse();
 let usingArticles = articles.slice(0, TOTAL_ARTICLES);
 
@@ -100,12 +101,12 @@ module.exports.insertArticlesKeywords = async function() {
 
         articles[article.article_id] = articleKeywords;
 
-        if ((i + 1) % 100 === 0) {
-            console.log(`Gathering 100 articles keywords took ${Date.now() - time} ms`);
+        if ((i + 1) % ARTICLE_COLLATION === 0) {
+            console.log(`Gathering ${ARTICLE_COLLATION} articles keywords took ${Date.now() - time} ms`);
             time = Date.now();
-            console.log("Now inserting 100 articles");
+            console.log(`Now inserting ${ARTICLE_COLLATION} articles`);
             await insertArticlesKeywords(articles);
-            console.log(`Inserting 100 articles took ${Date.now() - time} ms`);
+            console.log(`Inserting ${ARTICLE_COLLATION} articles took ${Date.now() - time} ms`);
             articles = {};
             time = Date.now();
         }
