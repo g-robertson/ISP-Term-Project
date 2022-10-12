@@ -57,8 +57,22 @@ CREATE FUNCTION Sum_Keywords() RETURNS TRIGGER AS $$
     END;
 $$ LANGUAGE 'plpgsql';
 
-
 CREATE TRIGGER ArticleKeywordInsertion
     AFTER INSERT ON ArticleKeywords
     FOR EACH ROW
     EXECUTE FUNCTION Sum_Keywords();
+
+CREATE FUNCTION Unsum_Keywords() RETURNS TRIGGER AS $$
+    BEGIN
+        UPDATE ArticleHasKeywordsOfLength
+            SET Keywords_Of_Length_Count = Keywords_Of_Length_Count - OLD.Keyword_Count
+            WHERE Article_ID = OLD.Article_ID AND Keyword_Length = LENGTH(OLD.Keyword);
+
+        RETURN OLD;
+    END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER ArticleKeywordDeletion
+    AFTER DELETE ON ArticleKeywords
+    FOR EACH ROW
+    EXECUTE FUNCTION Unsum_Keywords();

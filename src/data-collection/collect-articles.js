@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
-const {insertArticle, insertArticleKeyword, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
+const {insertArticle, insertArticleKeyword, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
 
 const COLLECTION_DIR = path.join(__dirname, "../../scraped");
 const KEYWORD_LENGTH = 20;
@@ -64,34 +64,56 @@ module.exports.insertArticlesKeywords = async function() {
     for (let articlePath of articles) {
         let article = await retrieveArticle(articlePath);
         let articleHasKeywordsOfLengthCounts = await retrieveArticlesKeywordsOfLengthCounts(articlePath);
-        
-        let finishedKeywords = {};
+
         let finishedKeywordsCount = 0;
         for (let row of articleHasKeywordsOfLengthCounts) {
-            console.log(row);
+            if (row.keywords_of_length_count + row.keyword_length - 1 === article.content_length) {
+                ++finishedKeywordsCount;
+            }
         }
 
         if (finishedKeywordsCount === 20) {
             continue;
         }
 
+        console.log(`Collecting keywords for article '${articlePath}'`);
+
+        let time = Date.now();
+
+        await deleteArticleKeywords(article.article_id);
+
+        console.log(`Deleting previous row took ${(Date.now() - time)} ms`)
+
+        time = Date.now();
+
         let articleContent = (await scrapeArticle(articlePath)).content;
     
+        console.log(`Scraping article took ${Date.now() - time} ms`);
+
+        time = Date.now();
+
         let articleKeywords = {};
+        let keywordCount = 0;
         for (let i = 0; i < articleContent.length; ++i) {
             for (let j = 1; i + j <= articleContent.length && j <= KEYWORD_LENGTH; ++j) {
                 let keyword = articleContent.substring(i, i + j);
                 if (articleKeywords[keyword] === undefined) {
                     articleKeywords[keyword] = 0;
+                    ++keywordCount;
                 }
                 ++articleKeywords[keyword];
             }
         }
 
+        console.log(`Gathering keywords took ${Date.now() - time} ms`);
+
+        time = Date.now();
+
+
         for (let keyword in articleKeywords) {
-            insertArticleKeyword(article.article_id, keyword, articleKeywords[keyword]);
+            await insertArticleKeyword(article.article_id, keyword, articleKeywords[keyword]);
         }
 
-        break;
+        console.log(`Inserting ${keywordCount} keywords took ${Date.now() - time} ms`);
     }
 }

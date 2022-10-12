@@ -45,6 +45,14 @@ module.exports.insertArticle = async function(publishDate, placement, title, con
     );
 }
 
+module.exports.deleteArticleKeywords = async function(articleId) {
+    if (!Number.isSafeInteger(articleId)) {
+        throw "Attempted to delete article keywords with a non-integer article id";
+    }
+
+    await query("DELETE FROM ArticleKeywords WHERE Article_ID = $1", [articleId]);
+}
+
 module.exports.insertArticleKeyword = async function(articleId, keyword, keywordCount) {
     if (!Number.isSafeInteger(articleId)) {
         throw "Attempted to insert an article keyword with a non-integer article id";
