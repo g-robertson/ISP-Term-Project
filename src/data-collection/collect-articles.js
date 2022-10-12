@@ -1,13 +1,16 @@
 const path = require('path');
 const fs = require('fs-extra');
-const {insertArticle, insertArticleKeyword, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
+const {insertArticle, insertArticleKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
 
 const COLLECTION_DIR = path.join(__dirname, "../../scraped");
 const KEYWORD_LENGTH = 20;
 
 let readArticles = {};
 
-let articles = fs.readdirSync(COLLECTION_DIR);
+const TOTAL_ARTICLES = 200;
+let articles = fs.readdirSync(COLLECTION_DIR).reverse();
+let usingArticles = articles.slice(0, TOTAL_ARTICLES);
+
 for (let i = 0; i < articles.length; ++i) {
     if (articles[i] === ".gitignore") {
         articles.splice(i, 1);
@@ -43,14 +46,13 @@ async function scrapeArticle(article) {
     return readArticles[article];
 }
 
-const TOTAL_FILES = 10;
 module.exports.insertArticles = async function() {
     let alreadyInserted = await retrieveInsertedArticles();
     let alreadyInsertedMap = {};
     for (let inserted of alreadyInserted) {
         alreadyInsertedMap[inserted.content_path] = true;
     }
-    for (let articlePath of articles) {
+    for (let articlePath of usingArticles) {
         if (alreadyInsertedMap[articlePath]) {
             continue;
         }
@@ -61,7 +63,7 @@ module.exports.insertArticles = async function() {
 }
 
 module.exports.insertArticlesKeywords = async function() {
-    for (let articlePath of articles) {
+    for (let articlePath of usingArticles) {
         let article = await retrieveArticle(articlePath);
         let articleHasKeywordsOfLengthCounts = await retrieveArticlesKeywordsOfLengthCounts(articlePath);
 
@@ -109,10 +111,7 @@ module.exports.insertArticlesKeywords = async function() {
 
         time = Date.now();
 
-
-        for (let keyword in articleKeywords) {
-            await insertArticleKeyword(article.article_id, keyword, articleKeywords[keyword]);
-        }
+        await insertArticleKeywords(article.article_id, articleKeywords);
 
         console.log(`Inserting ${keywordCount} keywords took ${Date.now() - time} ms`);
     }

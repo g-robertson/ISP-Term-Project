@@ -1,11 +1,13 @@
-const {query} = require("./test-db-interfacing.js");
+const {client, pgp} = require("./test-db-interfacing.js");
 
 module.exports.retrieveArticle = async function(contentPath) {
     if (typeof(contentPath) !== "string") {
         throw "Attempted to retrieve an article by content path with a non-string content path";
     }
 
-    return (await query("SELECT * FROM Articles WHERE Content_Path=$1", [contentPath])).rows[0];
+    
+
+    return await client.oneOrNone("SELECT * FROM Articles WHERE Content_Path=$1", [contentPath]);
 }
 
 module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPath) {
@@ -13,14 +15,14 @@ module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPa
         throw "Attempted to retrieve an article by content path with a non-string content path";
     }
 
-    return (await query("SELECT Keyword_Length, Keywords_Of_Length_Count FROM ArticleHasKeywordsOfLength WHERE Article_ID=("
+    return await client.manyOrNone("SELECT Keyword_Length, Keywords_Of_Length_Count FROM ArticleHasKeywordsOfLength WHERE Article_ID=("
                           + "SELECT Article_ID FROM Articles WHERE Content_Path=$1"
                       + ");", [contentPath]
-    )).rows;
+    );
 }
 
 module.exports.retrieveInsertedArticles = async function() {
-    return (await query("SELECT * FROM Articles")).rows;
+    return await client.manyOrNone("SELECT * FROM Articles");
 }
 
 module.exports.insertArticle = async function(publishDate, placement, title, contentPath, contentLength) {
@@ -40,7 +42,7 @@ module.exports.insertArticle = async function(publishDate, placement, title, con
         throw "Attempted to insert an article with a non-integer content length";
     }
 
-    await query("INSERT INTO Articles(Publish_Date, Placement, Title, Content_Path, Content_Length)"
+    await client.none("INSERT INTO Articles(Publish_Date, Placement, Title, Content_Path, Content_Length)"
                   + "VALUES($1,$2,$3,$4,$5);", [publishDate, placement, title, contentPath, contentLength]
     );
 }
@@ -50,7 +52,23 @@ module.exports.deleteArticleKeywords = async function(articleId) {
         throw "Attempted to delete article keywords with a non-integer article id";
     }
 
-    await query("DELETE FROM ArticleKeywords WHERE Article_ID = $1", [articleId]);
+    await client.none("DELETE FROM ArticleKeywords WHERE Article_ID = $1", [articleId]);
+}
+
+module.exports.insertArticleKeywords = async function(articleId, keywordPairs) {
+    const COLUMN_SET = new pgp.helpers.ColumnSet(['article_id', 'keyword', 'keyword_count'], {table: 'articlekeywords'});
+
+    let values = [];
+    for (let keyword in keywordPairs) {
+        values.push({
+            article_id: articleId,
+            keyword: keyword,
+            keyword_count: keywordPairs[keyword]
+        })
+    }
+
+    const query = pgp.helpers.insert(values, COLUMN_SET);
+    await client.none(query);
 }
 
 module.exports.insertArticleKeyword = async function(articleId, keyword, keywordCount) {
@@ -64,7 +82,7 @@ module.exports.insertArticleKeyword = async function(articleId, keyword, keyword
         throw "Attempted to insert an article keyword with a non-integer keyword count";
     }
 
-    await query("INSERT INTO ArticleKeywords(Article_ID, Keyword, Keyword_Count)"
+    await client.none("INSERT INTO ArticleKeywords(Article_ID, Keyword, Keyword_Count)"
                   + "VALUES($1,$2,$3);", [articleId, keyword, keywordCount]
     );
 }
