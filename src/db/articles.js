@@ -55,6 +55,24 @@ module.exports.deleteArticleKeywords = async function(articleId) {
     await client.none("DELETE FROM ArticleKeywords WHERE Article_ID = $1", [articleId]);
 }
 
+module.exports.insertArticlesKeywords = async function(articleKeywordPairs) {
+    const COLUMN_SET = new pgp.helpers.ColumnSet(['article_id', 'keyword', 'keyword_count'], {table: 'articlekeywords'});
+
+    let values = [];
+    for (let article in articleKeywordPairs) {
+        for (let keyword in articleKeywordPairs[article]) {
+            values.push({
+                article_id: parseInt(article),
+                keyword: keyword,
+                keyword_count: articleKeywordPairs[article][keyword]
+            });
+        }
+    }
+
+    const query = pgp.helpers.insert(values, COLUMN_SET);
+    await client.none(query);
+}
+
 module.exports.insertArticleKeywords = async function(articleId, keywordPairs) {
     const COLUMN_SET = new pgp.helpers.ColumnSet(['article_id', 'keyword', 'keyword_count'], {table: 'articlekeywords'});
 

@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
-const {insertArticle, insertArticleKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
+const {insertArticle, insertArticlesKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
 
 const COLLECTION_DIR = path.join(__dirname, "../../scraped");
 const KEYWORD_LENGTH = 20;
@@ -63,7 +63,12 @@ module.exports.insertArticles = async function() {
 }
 
 module.exports.insertArticlesKeywords = async function() {
-    for (let articlePath of usingArticles) {
+    let articles = {};
+    let ttime = Date.now();
+    let time = Date.now();
+    for (let i = 0; i < TOTAL_ARTICLES; ++i) {
+        let articlePath = usingArticles[i];
+
         let article = await retrieveArticle(articlePath);
         let articleHasKeywordsOfLengthCounts = await retrieveArticlesKeywordsOfLengthCounts(articlePath);
 
@@ -78,41 +83,33 @@ module.exports.insertArticlesKeywords = async function() {
             continue;
         }
 
-        console.log(`Collecting keywords for article '${articlePath}'`);
-
-        let time = Date.now();
-
         await deleteArticleKeywords(article.article_id);
 
-        console.log(`Deleting previous row took ${(Date.now() - time)} ms`)
-
-        time = Date.now();
-
         let articleContent = (await scrapeArticle(articlePath)).content;
-    
-        console.log(`Scraping article took ${Date.now() - time} ms`);
-
-        time = Date.now();
 
         let articleKeywords = {};
-        let keywordCount = 0;
         for (let i = 0; i < articleContent.length; ++i) {
             for (let j = 1; i + j <= articleContent.length && j <= KEYWORD_LENGTH; ++j) {
                 let keyword = articleContent.substring(i, i + j);
                 if (articleKeywords[keyword] === undefined) {
                     articleKeywords[keyword] = 0;
-                    ++keywordCount;
                 }
                 ++articleKeywords[keyword];
             }
         }
 
-        console.log(`Gathering keywords took ${Date.now() - time} ms`);
+        articles[article.article_id] = articleKeywords;
 
-        time = Date.now();
-
-        await insertArticleKeywords(article.article_id, articleKeywords);
-
-        console.log(`Inserting ${keywordCount} keywords took ${Date.now() - time} ms`);
+        if ((i + 1) % 100 === 0) {
+            console.log(`Gathering 100 articles keywords took ${Date.now() - time} ms`);
+            time = Date.now();
+            console.log("Now inserting 100 articles");
+            await insertArticlesKeywords(articles);
+            console.log(`Inserting 100 articles took ${Date.now() - time} ms`);
+            articles = {};
+            time = Date.now();
+        }
     }
+
+    console.log(`Total time taken for ${TOTAL_ARTICLES} articles keyword insertion was ${Date.now() - ttime} ms`);
 }
