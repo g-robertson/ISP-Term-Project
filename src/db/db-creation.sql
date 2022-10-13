@@ -34,6 +34,8 @@ CREATE TABLE ArticleKeywords
 
     PRIMARY KEY (Article_ID, Keyword)
 );
+-- Common action
+CREATE INDEX ON ArticleKeywords (Keyword);
 
 CREATE TABLE ArticleKeywordsOfLength
 (
