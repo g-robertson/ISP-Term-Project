@@ -65,6 +65,8 @@ module.exports.insertArticles = async function() {
 
 module.exports.insertArticlesKeywords = async function() {
     let articles = {};
+    let articlesCollected = 0;
+    let totalArticlesCollected = 0;
     let ttime = Date.now();
     let time = Date.now();
     for (let i = 0; i < TOTAL_ARTICLES; ++i) {
@@ -75,7 +77,7 @@ module.exports.insertArticlesKeywords = async function() {
 
         let finishedKeywordsCount = 0;
         for (let row of articleHasKeywordsOfLengthCounts) {
-            if (row.keywords_of_length_count + row.keyword_length - 1 === article.content_length) {
+            if (row.keywords_count + row.keyword_length - 1 === article.content_length) {
                 ++finishedKeywordsCount;
             }
         }
@@ -101,16 +103,20 @@ module.exports.insertArticlesKeywords = async function() {
 
         articles[article.article_id] = articleKeywords;
 
-        if ((i + 1) % ARTICLE_COLLATION === 0) {
-            console.log(`Gathering ${ARTICLE_COLLATION} articles keywords took ${Date.now() - time} ms`);
+        ++articlesCollected;
+
+        if (articlesCollected % ARTICLE_COLLATION === 0 || i + 1 === TOTAL_ARTICLES) {
+            console.log(`Gathering ${articlesCollected} articles keywords took ${Date.now() - time} ms`);
             time = Date.now();
-            console.log(`Now inserting ${ARTICLE_COLLATION} articles`);
+            console.log(`Now inserting ${articlesCollected} articles`);
             await insertArticlesKeywords(articles);
-            console.log(`Inserting ${ARTICLE_COLLATION} articles took ${Date.now() - time} ms`);
+            console.log(`Inserting ${articlesCollected} articles took ${Date.now() - time} ms`);
             articles = {};
+            totalArticlesCollected += articlesCollected;
+            articlesCollected = 0;
             time = Date.now();
         }
     }
 
-    console.log(`Total time taken for ${TOTAL_ARTICLES} articles keyword insertion was ${Date.now() - ttime} ms`);
+    console.log(`Total time taken for ${totalArticlesCollected} articles keyword insertion was ${Date.now() - ttime} ms`);
 }
