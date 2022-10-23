@@ -69,7 +69,7 @@ module.exports.insertArticlesKeywords = async function() {
     let totalArticlesCollected = 0;
     let ttime = Date.now();
     let time = Date.now();
-    for (let i = 0; i < TOTAL_ARTICLES; ++i) {
+    for (let i = 0; i < TOTAL_ARTICLES && i < usingArticles.length; ++i) {
         let articlePath = usingArticles[i];
 
         let article = await retrieveArticle(articlePath);
