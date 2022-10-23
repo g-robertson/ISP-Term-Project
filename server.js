@@ -12,11 +12,11 @@ async function main() {
     await insertArticlesKeywords();
 
     const app = express();
-    
+
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
     app.use(cookieParser())
-    
+
     app.use((req, res, next) => {
         console.log(req.url)
         next();
@@ -38,7 +38,7 @@ async function main() {
             res.redirect("/404");
         }
     });
-    
+
     // for all defined status code, respond with according page and status
     const STATUS_CODE_RESPONSES = [404];
     for (let statusCodeResponse of STATUS_CODE_RESPONSES) {
@@ -53,7 +53,7 @@ async function main() {
     app.use((req, res, next) => {
         res.redirect("/404");
     })
-    
+
     const server = app.listen(CONFIG.HTTP.port, CONFIG.HTTP.host);
 
     server.on('close', async () => {

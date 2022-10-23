@@ -15,6 +15,8 @@ ADD ./src/components /www/src/components
 ADD ./src/pages /www/src/pages
 ADD ./src/images /www/src/images
 ADD ./src/db /www/src/db
+ADD ./src/data-collection/collect-articles.js /www/src/data-collection/collect-articles.js
+ADD ./scraped /www/scraped
 ADD ./gatsby-config.js /www/gatsby-config.js
 ADD ./gatsby-node.js /www/gatsby-node.js
 ADD ./config.js /www/config.js
