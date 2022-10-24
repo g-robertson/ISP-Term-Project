@@ -18,7 +18,6 @@ ADD ./src/db /www/src/db
 ADD ./src/data-collection/collect-articles.js /www/src/data-collection/collect-articles.js
 ADD ./scraped /www/scraped
 ADD ./gatsby-config.js /www/gatsby-config.js
-ADD ./gatsby-browser.js /www/gatsby-browser.js
 ADD ./gatsby-node.js /www/gatsby-node.js
 ADD ./config.js /www/config.js
 RUN gatsby build
