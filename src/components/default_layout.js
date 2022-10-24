@@ -3,7 +3,7 @@ import 'react-calendar/dist/Calendar.css'
 import Helmet from 'react-helmet'
 import Calendar from 'react-calendar'
 import { StaticImage } from 'gatsby-plugin-image'
-import { Link, useStaticQuery, graphql } from 'gatsby'
+import { Link } from 'gatsby'
 import {
 	container,
 	content,
@@ -35,18 +35,9 @@ export function updateDate() {
 	return <p>{today.getFullYear()}-{(today.getMonth()+1).toString().padStart(2, 0)}-{today.getDate().toString().padStart(2, 0)}</p>
 }
 
-const Layout = ({ pageTitle, children }) => {
+const Layout = ({ children }) => {
 	const [value, onChange] = useState(new Date());
 
-	const data = useStaticQuery(graphql`
-		query {
-			site {
-				siteMetadata {
-					title
-				}
-			}
-		}
-	`)
 	return (
 		<div>
 			<Helmet>
@@ -128,9 +119,7 @@ const Layout = ({ pageTitle, children }) => {
 				</div>
 			</div>
 			<div className={content}>
-				<title>{pageTitle} | {data.site.siteMetadata.title}</title>
 				<main>
-					<h1 className={heading}>{pageTitle}</h1>
 					{children}
 				</main>
 			</div>
