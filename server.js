@@ -39,6 +39,11 @@ async function main() {
         }
     });
 
+    app.get('/', function(req, res) {
+        let today = new Date();
+        res.redirect(`${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, 0)}-${today.getDate().toString().padStart(2, 0)}`);
+    });
+
     // for all defined status code, respond with according page and status
     const STATUS_CODE_RESPONSES = [404];
     for (let statusCodeResponse of STATUS_CODE_RESPONSES) {

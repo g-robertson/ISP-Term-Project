@@ -32,7 +32,7 @@ export function toggleId(id, dis) {
 
 export function updateDate() {
 	let today = new Date();
-	return <p>{(((today.getMonth() > 8) ? (today.getMonth() + 1) : ('0' + (today.getMonth() + 1))) + '-' + ((today.getDate() > 9) ? today.getDate() : ('0' + today.getDate())) + '-' + today.getFullYear())}</p>
+	return <p>{today.getFullYear()}-{(today.getMonth()+1).toString().padStart(2, 0)}-{today.getDate().toString().padStart(2, 0)}</p>
 }
 
 const Layout = ({ pageTitle, children }) => {
@@ -52,7 +52,7 @@ const Layout = ({ pageTitle, children }) => {
 			<Helmet>
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-				<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&display=swap" rel="stylesheet" /> 
+				<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&display=swap" rel="stylesheet" />
 			</Helmet>
 			<div className={container}>
 				<div className={navbar}>
@@ -103,9 +103,7 @@ const Layout = ({ pageTitle, children }) => {
 						value={value}
 						maxDate={new Date()}
 						onClickDay={(date) => {
-							window.location.assign(`/?date=${date.valueOf()}&artnumber=-1`);
-							let newDate = `${date.getMonth()}/${date.getDay()}/${date.getFullYear}`;
-							updateDate(newDate);
+							window.location.assign(`/${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`);
 						}}
 					/>
 				</div>

@@ -1,21 +1,16 @@
 import React from "react"
-import Layout from '../components/default_layout'
+import Layout from './default_layout'
 import {
-	articleTitle,
-  articleTimestamp,
-  articleImage,
-  articleText,
-  inputContainer
+    articleTitle,
+    articleTimestamp,
+    articleContent,
+    inputContainer
 } from './article.module.css'
 
-var idCounter = -1;
-
-export function setSrc(src) {
-  if (src.startsWith("http")) {
-    return src;
-  } else {
-    return "https://nhkeasier.com" + src;
-  }
+function parseContent(content) {
+  return content
+    .replaceAll(`<img`,`<img alt="Article Image"`)
+    .replaceAll(`src=">`, `src="`)
 }
 
 export function setArticleState(id) {
@@ -35,55 +30,26 @@ export function setArticleState(id) {
   );
 }
 
-export function resetCounter() {
-  idCounter = -1;
-}
-
-export default function articleLayout({
-  pages, children
-}) {
-
-  return (
-    <Layout>
-      {resetCounter()}
-        {pages.map(page => (
-          <div>
-            <p className={articleTitle}>
-              {page.titleText}
-            </p>
-            <p id="timestamp" className={articleTimestamp}>
-              {page.timestampText}
-            </p>
-            <div>
-              <img
-                alt="Article Image"
-                src={setSrc(page.imgSrc)}
-                className={articleImage}
-              />
-            </div>
-            <div>
-              {
-                page.bodyText.map(txt => (
-                  <p
-                    className={articleText}
-                    key={txt}
-                  >
-                    {txt}
-                  </p>
-                ))
-              }
-            </div>
-            <div className={inputContainer}>
-              <input id={++idCounter} 
-                type="checkbox"
-                class="articleCheckbox"
-                onClick={(e) => setArticleState(e.target.id)}
-              />
-              <p>Mark Article as Read</p>
-            </div>
-            {children}
+export default ({pageContext: {articles, contents}}) => (
+  <Layout>
+      {articles.map(article => (
+        <div>
+          <p className={articleTitle}>
+            {article.title}
+          </p>
+          <p id="timestamp" className={articleTimestamp}>
+            {article.publish_date}
+          </p>
+          <div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(contents[article.placement - 1])}} />
+          <div className={inputContainer}>
+            <input id={article.placement}
+              type="checkbox"
+              class="articleCheckbox"
+              onClick={(e) => setArticleState(e.target.id)}
+            />
+            <p>Mark Article as Read</p>
           </div>
-        ))}
-    </Layout>
-  );
-}
+        </div>
+      ))}
+  </Layout>
+);

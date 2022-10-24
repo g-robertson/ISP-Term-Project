@@ -11,17 +11,17 @@
 	font-size: 20px;
 }
 
-.articleImage {
-	border: 1px solid black;
-	margin: 10px 0px 20px 0px;
-	max-width: 500px;
-}
-
-.article-text {
+.article-content p {
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size: 22px;
 	line-height: 30px;
 	margin: 0px 0px 40px 0px;
+}
+
+.article-content img {
+	border: 1px solid black;
+	margin: 10px 0px 20px 0px;
+	max-width: 500px;
 }
 
 .input-container {

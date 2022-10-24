@@ -1,8 +1,9 @@
 const {insertArticles, insertArticlesKeywords} = require("./src/data-collection/collect-articles.js");
 const {retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("./src/db/articles.js");
+const fs = require('fs'); 
 
 function parseDate(date) {
-    return `${date.getFullYear()}-${date.getMonth().toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`;
+    return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`;
 }
 
 function insertionSort(arr) {
@@ -18,21 +19,26 @@ function insertionSort(arr) {
     return arr;
 }
 
+function retrieveContent(content_path) {
+    let file_content = fs.readFileSync(`/www/scraped/${content_path}`);
+    return file_content.toString().split(/:[0-9][0-9],/).pop();
+  }
+
 exports.createPages = async function ({ actions }) {
     await insertArticles();
     await insertArticlesKeywords();
     const articles = await retrieveInsertedArticles();
     let articles_for_day = [];
-    console.log(articles[0]);
     let current_date = parseDate(articles[0].publish_date);
     articles.forEach(article => {
-        console.log(current_date);
         if (current_date != parseDate(article.publish_date)) {
+            sorted_articles = insertionSort(articles_for_day.reverse());
             actions.createPage({
                 path: `/${current_date}`,
-                component: require.resolve(`./src/components/article_page.js`),
+                component: require.resolve(`./src/components/article_layout.js`),
                 context: {
-                    articles: insertionSort(articles_for_day.reverse()),
+                    articles: sorted_articles,
+                    contents: sorted_articles.map(x => retrieveContent(x.content_path)),
                 }
             })
             current_date = parseDate(article.publish_date);
