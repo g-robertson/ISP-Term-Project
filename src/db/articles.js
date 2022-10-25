@@ -5,8 +5,6 @@ module.exports.retrieveArticle = async function(contentPath) {
         throw "Attempted to retrieve an article by content path with a non-string content path";
     }
 
-    
-
     return await client.oneOrNone("SELECT * FROM Articles WHERE Content_Path=$1", [contentPath]);
 }
 
@@ -15,9 +13,9 @@ module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPa
         throw "Attempted to retrieve an article by content path with a non-string content path";
     }
 
-    return await client.manyOrNone("SELECT Keyword_Length, Keywords_Count FROM ArticleKeywordsOfLength WHERE Article_ID=("
-                          + "SELECT Article_ID FROM Articles WHERE Content_Path=$1"
-                      + ");", [contentPath]
+    return await client.manyOrNone("SELECT Keyword_Length, Keywords_Count FROM ArticleKeywordsOfLength WHERE Article_ID=(" +
+        "SELECT Article_ID FROM Articles WHERE Content_Path=$1" +
+        ");", [contentPath]
     );
 }
 
@@ -42,8 +40,8 @@ module.exports.insertArticle = async function(publishDate, placement, title, con
         throw "Attempted to insert an article with a non-integer content length";
     }
 
-    await client.none("INSERT INTO Articles(Publish_Date, Placement, Title, Content_Path, Content_Length)"
-                  + "VALUES($1,$2,$3,$4,$5);", [publishDate, placement, title, contentPath, contentLength]
+    await client.none("INSERT INTO Articles(Publish_Date, Placement, Title, Content_Path, Content_Length)" +
+        "VALUES($1,$2,$3,$4,$5);", [publishDate, placement, title, contentPath, contentLength]
     );
 }
 
@@ -100,7 +98,7 @@ module.exports.insertArticleKeyword = async function(articleId, keyword, keyword
         throw "Attempted to insert an article keyword with a non-integer keyword count";
     }
 
-    await client.none("INSERT INTO ArticleKeywords(Article_ID, Keyword, Keyword_Count)"
-                  + "VALUES($1,$2,$3);", [articleId, keyword, keywordCount]
+    await client.none("INSERT INTO ArticleKeywords(Article_ID, Keyword, Keyword_Count)" +
+        "VALUES($1,$2,$3);", [articleId, keyword, keywordCount]
     );
 }
