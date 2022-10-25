@@ -19,6 +19,17 @@ module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPa
     );
 }
 
+module.exports.retrieveArticlesWithSimilarTitle = async function(title) {
+    if (typeof(title) !== "string") {
+        throw "Attempted to retrieve an article by title with a non-string title";
+    }
+
+    title = title.replaceAll('_', '\\_');
+    title = title.replaceAll('%', '\\%');
+
+    return await client.manyOrNone("SELECT * FROM Articles WHERE Title LIKE $1", [`%${title}%`]);
+}
+
 module.exports.retrieveArticlesWithKeyword = async function(keyword) {
     if (typeof(keyword) !== "string") {
         throw "Attempted to retrieve an article by content path with a non-string content path";
