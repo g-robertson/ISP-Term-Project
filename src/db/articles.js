@@ -30,6 +30,18 @@ module.exports.retrieveArticlesWithSimilarTitle = async function(title) {
     return await client.manyOrNone("SELECT * FROM Articles WHERE Title LIKE $1", [`%${title}%`]);
 }
 
+module.exports.retrieveArticlesWithKeywordByFrequency = async function(keyword) {
+    if (typeof(keyword) !== "string") {
+        throw "Attempted to retrieve an article by content path with a non-string content path";
+    }
+
+    return await client.manyOrNone("SELECT Articles.* FROM Articles JOIN " +
+        "(SELECT Article_ID, Keyword_Count FROM ArticleKeywords WHERE Keyword=$1) AS ArticleKeywords " +
+        "ON ArticleKeywords.Article_ID = Articles.Article_ID " +
+        "ORDER BY Keyword_Count DESC;", [keyword]
+    );
+}
+
 module.exports.retrieveArticlesWithKeyword = async function(keyword) {
     if (typeof(keyword) !== "string") {
         throw "Attempted to retrieve an article by content path with a non-string content path";

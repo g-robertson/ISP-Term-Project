@@ -15,7 +15,7 @@ module.exports.main = async function(req) {
 
     let query = req.query.query;
     let titledMatches = await articles.retrieveArticlesWithSimilarTitle(query);
-    let keywordMatches = await articles.retrieveArticlesWithKeyword(query);
+    let keywordMatches = await articles.retrieveArticlesWithKeywordByFrequency(query);
 
     return titledMatches.concat(...keywordMatches);
 }
