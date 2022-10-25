@@ -19,6 +19,17 @@ module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPa
     );
 }
 
+module.exports.retrieveArticlesWithKeyword = async function(keyword) {
+    if (typeof(keyword) !== "string") {
+        throw "Attempted to retrieve an article by content path with a non-string content path";
+    }
+
+    return await client.manyOrNone("SELECT Articles.* FROM Articles JOIN " +
+        "(SELECT Article_ID FROM ArticleKeywords WHERE Keyword=$1) AS ArticleKeywords " +
+        "ON ArticleKeywords.Article_ID = Articles.Article_ID;", [keyword]
+    );
+}
+
 module.exports.retrieveInsertedArticles = async function() {
     return await client.manyOrNone("SELECT * FROM Articles");
 }
