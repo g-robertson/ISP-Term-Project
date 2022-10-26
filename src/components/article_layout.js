@@ -152,7 +152,7 @@ const Layout = ( {pageContext: {day, articles, contents}} ) => {
 				<main>
 					<h1 className={heading}>{day}</h1>
                     {articles.map(article => (
-						<div>
+						<div id={article.placement}>
 							<p className={articleTitle}>
 								{article.title}
 							</p>
@@ -161,7 +161,7 @@ const Layout = ( {pageContext: {day, articles, contents}} ) => {
 							</p>
 							<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(contents[article.placement - 1])}} />
 							<div className={inputContainer}>
-								<input id={article.placement}
+								<input id={"input_" + article.placement.toString()}
 								type="checkbox"
 								class="articleCheckbox"
 								onClick={(e) => setArticleState(e.target.id)}
