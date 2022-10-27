@@ -51,13 +51,13 @@ export function setArticleState(id) {
     let thisBox = document.getElementById(id);
     let url = new URL(window.location.href);
     fetch(
-      "http://" + url.hostname + ":" + url.port + "/api/setstatereadarticle",
+      "http://" + url.hostname + ":" + url.port + "/api/set-state-read-article",
       {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          date: url.search.split('&')[0].replace('?date=', ''),
-          artnumber: thisBox.id,
+          date: window.location.pathname.substring(1),
+          artnumber: thisBox.id.replace("input_", ""),
           state: thisBox.checked,
         })
       }

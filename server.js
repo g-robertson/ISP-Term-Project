@@ -27,12 +27,12 @@ async function main() {
         let apiFunction = APIS[endpoint];
         if (apiFunction !== undefined) {
             try {
-                let response = JSON.stringify(await apiFunction(req));
+                let response = JSON.stringify(await apiFunction(req, res));
                 if (response === undefined) {
                     response = "null";
+                } else {
+                    res.status(200).send(response).end();
                 }
-                
-                res.status(200).send(response).end();
             } catch(err) {
                 console.log(`Warning: API function ${endpoint} threw error:`);
                 console.log(err);

@@ -3,7 +3,7 @@ CREATE TABLE Users
     User_ID SERIAL PRIMARY KEY,
     Username VARCHAR(30) UNIQUE NOT NULL,
     Hash CHAR(60) NOT NULL,
-    Session_Token CHAR(128)
+    Session_Token BYTEA
 );
 
 CREATE TABLE Articles
@@ -14,7 +14,7 @@ CREATE TABLE Articles
     Title VARCHAR(400) NOT NULL,
     Content_Path VARCHAR(200) UNIQUE NOT NULL,
     Content_Length INT NOT NULL,
-    
+
     UNIQUE(Publish_Date, Placement)
 );
 
@@ -22,6 +22,7 @@ CREATE TABLE ReadArticles
 (
     User_ID INT REFERENCES Users(User_ID),
     Article_ID SMALLINT REFERENCES Articles(Article_ID),
+    Read_Date TIMESTAMP NOT NULL,
 
     PRIMARY KEY (User_ID, Article_ID)
 );
@@ -54,7 +55,7 @@ CREATE FUNCTION Sum_Keywords() RETURNS TRIGGER AS $$
         UPDATE ArticleKeywordsOfLength
             SET Keywords_Count = NEW.Keyword_Count + Keywords_Count
             WHERE Article_ID = NEW.Article_ID AND Keyword_Length = LENGTH(NEW.Keyword);
-        
+
         RETURN NEW;
     END;
 $$ LANGUAGE 'plpgsql';
