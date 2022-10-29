@@ -1,5 +1,7 @@
 .cache
 /node_modules
+/archive
 /backup
+/dockers
 /public
 /scraped
