@@ -93,6 +93,16 @@ nav {
 	justify-content: flex-end;
 }
 
+.nav-link-item > input {
+	background: white;
+}
+.nav-link-item > input[type="text"] {
+	width: 100px;
+}
+.nav-link-item > input[type="button"] {
+	width: 55px;
+}
+
 .nav-link-item {
 	padding-right: 20px;
 }

@@ -36,7 +36,6 @@ export function updateDate() {
 }
 
 const Layout = ({ children }) => {
-	const [value, onChange] = useState(new Date());
 
 	return (
 		<div>
@@ -63,7 +62,7 @@ const Layout = ({ children }) => {
 						<nav>
 							<ul className={navLinks}>
 								<li className={navLinkItem}>
-									<input id="searchTextbox" type="text" placeholder="Search" value="" />
+									<input id="searchTextbox" type="text" placeholder="Search" />
 								</li>
 								<li className={navLinkItem}>
 									<input id="searchButton" type="button" value="Search" />
@@ -96,8 +95,7 @@ const Layout = ({ children }) => {
 				</div>
 				<div id="cal" className={calendar} style={{display:'none'}}>
 					<Calendar
-						onChange={onChange}
-						value={value}
+						value={new Date()}
 						maxDate={new Date()}
 						onClickDay={(date) => {
 							window.location.assign(`/${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`);
