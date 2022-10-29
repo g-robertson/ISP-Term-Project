@@ -12,5 +12,6 @@ docker run \
     --net jpez-net \
     -v jpez-gatsby-cache:/www/.cache \
     -v jpez-gatsby-public:/www/public \
+    --mount type=bind,source="$(pwd)"/scraped,target=/www/scraped \
     $detachArg \
     --name jpez-node jpez-node
