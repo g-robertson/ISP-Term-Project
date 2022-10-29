@@ -63,6 +63,12 @@ const Layout = ({ children }) => {
 						<nav>
 							<ul className={navLinks}>
 								<li className={navLinkItem}>
+									<input id="searchTextbox" type="text" placeholder="Search" value="" />
+								</li>
+								<li className={navLinkItem}>
+									<input id="searchButton" type="button" value="Search" />
+								</li>
+								<li className={navLinkItem}>
 									<Link to="/" className={navLinkText}>
 										Home
 									</Link>
