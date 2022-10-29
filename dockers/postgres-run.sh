@@ -2,7 +2,7 @@
 
 ./dockers/network-build.sh
 
-detachArg=""
+detachArg="-i"
 if [ "$1" == "headless" ]; then
     detachArg="-d"
 fi
@@ -14,5 +14,6 @@ docker run \
     -v jpez-pgdata:/var/lib/postgresql/data \
     -p 127.0.0.1:5432:5432 \
     --net jpez-net \
+    -t \
     $detachArg \
     --name jpez-postgres jpez-postgres || true

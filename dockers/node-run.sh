@@ -2,7 +2,7 @@
 
 ./dockers/network-build.sh
 
-detachArg=""
+detachArg="-i"
 if [ "$1" == "headless" ]; then
     detachArg="-d"
 fi
@@ -13,5 +13,6 @@ docker run \
     -v jpez-gatsby-cache:/www/.cache \
     -v jpez-gatsby-public:/www/public \
     --mount type=bind,source="$(pwd)"/scraped,target=/www/scraped \
+    -t \
     $detachArg \
     --name jpez-node jpez-node
