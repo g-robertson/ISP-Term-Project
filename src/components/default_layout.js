@@ -20,12 +20,12 @@ import {
 
 
 export function toggleId(id, dis) {
-		let item = document.getElementById(id);
-		if (item.style.display === 'none') {
-			item.style.display = dis;
-		} else {
-			item.style.display = 'none';
-		}
+	let item = document.getElementById(id);
+	if (item.style.display === 'none') {
+		item.style.display = dis;
+	} else {
+		item.style.display = 'none';
+	}
 }
 
 export function updateDate() {
@@ -63,7 +63,7 @@ const DefaultLayout = ({ children }) => (
 					<nav>
 						<ul className={navLinks}>
 							<li className={navLinkItem}>
-								<input id="searchTextbox" type="text" placeholder="Search" />
+								<input id="searchTextbox" type="text" placeholder="Search" defaultValue="" />
 							</li>
 							<li className={navLinkItem}>
 								<input id="searchButton" type="button" value="Search" />
