@@ -1,7 +1,9 @@
 FROM node:18
 RUN npm install -g gatsby-cli
-CMD node --unhandled-rejections=strict server.js
+
+# Set CMD
 EXPOSE 8080
+CMD gatsby build && node --unhandled-rejections=strict server.js
 
 # Get the node_modules
 RUN mkdir -p /www/src
@@ -9,18 +11,6 @@ WORKDIR www
 # node-init/package.json only contains dependencies, so will not uncache unless specifically dependencies are changed
 COPY ./build/node-init/package.json /www/package.json
 RUN npm install
-
-# Compile the gatsby pages
-ADD ./scraped /www/scraped
-ADD ./config.js /www/config.js
-ADD ./gatsby-config.js /www/gatsby-config.js
-ADD ./gatsby-node.js /www/gatsby-node.js
-ADD ./src/data-collection /www/src/data-collection
-ADD ./src/db /www/src/db
-ADD ./src/images /www/src/images
-ADD ./src/components /www/src/components
-ADD ./src/pages /www/src/pages
-RUN gatsby build
 
 # Add the rest
 ADD . /www

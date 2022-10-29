@@ -9,3 +9,6 @@ docker create --name jpez-node-init jpez-node-init
 docker cp jpez-node-init:/node-init build/
 
 docker build --network jpez-net -t jpez-node -f dockers/Dockerfile.node .
+
+docker volume create jpez-gatsby-cache
+docker volume create jpez-gatsby-public

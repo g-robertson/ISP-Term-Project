@@ -22,8 +22,9 @@
     "start-node": "./dockers/node-start.sh headless",
     "start-headed-node": "./dockers/node-start.sh",
     "kill": "npm run kill-postgres && npm run kill-node",
-    "start": "npm run start-postgres && npm run start-node",
-    "start-headed": "npm run start-postgres && npm run start-headed-node"
+    "start-headless": "npm run start-postgres && npm run start-node",
+    "start-headed": "npm run start-postgres && npm run start-headed-node",
+    "start": "npm run start-headed"
   },
   "repository": {
     "type": "git",
