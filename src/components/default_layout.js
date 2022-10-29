@@ -34,12 +34,14 @@ export function updateDate() {
 	return <p>{today.getFullYear()}-{(today.getMonth()+1).toString().padStart(2, 0)}-{today.getDate().toString().padStart(2, 0)}</p>
 }
 
-export const Head = () => {
+export const Head = ({ children }) => {
 	return (
 		<>
 			<link rel="preconnect" href="https://fonts.googleapis.com" />
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 			<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;family=Noto+Sans+JP&amp;display=swap" rel="stylesheet" />
+            <script src="/assets/js/default.js"></script>
+			{children}
 		</>
 	);
 }

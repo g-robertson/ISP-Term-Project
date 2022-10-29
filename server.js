@@ -60,6 +60,7 @@ async function main() {
 
     // make root dir public for app, and set default extension to html
     app.use(serveStatic("public", {index: ["index.html", "index.htm"]}));
+    app.use("/assets/js", serveStatic("src/pages-js", {index: false}));
     app.use((req, res, next) => {
         res.redirect("/404");
     })
