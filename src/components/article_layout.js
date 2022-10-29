@@ -11,7 +11,7 @@ import {
 } from './article.module.css'
 import DefaultLayout from "../components/default_layout"
 
-export {Head} from "../components/default_layout"
+export { Head } from "../components/default_layout"
 
 export function toggleId(id, dis) {
 		let item = document.getElementById(id);
