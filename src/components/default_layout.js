@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import 'react-calendar/dist/Calendar.css'
 import Calendar from 'react-calendar'
-import { getLowResolutionImageURL, StaticImage } from 'gatsby-plugin-image'
+import { StaticImage } from 'gatsby-plugin-image'
 import { Link } from 'gatsby'
 import {
 	container,
 	content,
 	date,
-	heading,
 	navbar,
 	navContent,
 	navLogo,
@@ -46,95 +45,91 @@ export const Head = ({ children }) => {
 	);
 }
 
-const Layout = ({ children }) => {
-
-	return (
-		<div>
-			<div className={container}>
-				<div className={navbar}>
-					<div className={navContent}>
-						<div className={navLogo}>
-							<Link to="/">
-								<StaticImage
-									alt="JPEZ Logo"
-									src="../images/jpez_logo.png"
-									width={40}
-								/>
-							</Link>
-						</div>
-						<div id="curDate" className={date} onClick={() => toggleId("cal", "inline-block")}>
-								{updateDate()}
-						</div>
-						<nav>
-							<ul className={navLinks}>
-								<li className={navLinkItem}>
-									<input id="searchTextbox" type="text" placeholder="Search" />
-								</li>
-								<li className={navLinkItem}>
-									<input id="searchButton" type="button" value="Search" />
-								</li>
-								<li className={navLinkItem}>
-									<Link to="/" className={navLinkText}>
-										Home
-									</Link>
-								</li>
-								<li className={navLinkItem}>
-									<Link to="/account" className={navLinkText}>
-										Account
-									</Link>
-								</li>
-								<li className={navLinkItem}>
-									<Link to="/about" className={navLinkText}>
-										About
-									</Link>
-								</li>
-							</ul>
-						</nav>
-						<nav className={mobileNav} onClick={() => toggleId("dropLinks", "inline-flex")}>
+const DefaultLayout = ({ children }) => (
+	<div>
+		<div className={container}>
+			<div className={navbar}>
+				<div className={navContent}>
+					<div className={navLogo}>
+						<Link to="/">
 							<StaticImage
 								alt="JPEZ Logo"
-								src="../images/hamburg.png"
+								src="../images/jpez_logo.png"
 								width={40}
 							/>
-						</nav>
+						</Link>
 					</div>
-				</div>
-				<div id="cal" className={calendar} style={{display:'none'}}>
-					<Calendar
-						value={new Date()}
-						maxDate={new Date()}
-						onClickDay={(date) => {
-							window.location.assign(`/${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`);
-						}}
-					/>
-				</div>
-				<div id="dropLinks" className={drop} style={{display:'none'}}>
-					<ul>
-						<li>
-							<Link to="/" className={navLinkText}>
-								Home
-							</Link>
-						</li>
-						<li>
-							<Link to="/account" className={navLinkText}>
-								Account
-							</Link>
-						</li>
-						<li>
-							<Link to="/about" className={navLinkText}>
-								About
-							</Link>
-						</li>
-					</ul>
+					<div id="curDate" className={date} onClick={() => toggleId("cal", "inline-block")}>
+							{updateDate()}
+					</div>
+					<nav>
+						<ul className={navLinks}>
+							<li className={navLinkItem}>
+								<input id="searchTextbox" type="text" placeholder="Search" />
+							</li>
+							<li className={navLinkItem}>
+								<input id="searchButton" type="button" value="Search" />
+							</li>
+							<li className={navLinkItem}>
+								<Link to="/" className={navLinkText}>
+									Home
+								</Link>
+							</li>
+							<li className={navLinkItem}>
+								<Link to="/account" className={navLinkText}>
+									Account
+								</Link>
+							</li>
+							<li className={navLinkItem}>
+								<Link to="/about" className={navLinkText}>
+									About
+								</Link>
+							</li>
+						</ul>
+					</nav>
+					<nav className={mobileNav} onClick={() => toggleId("dropLinks", "inline-flex")}>
+						<StaticImage
+							alt="JPEZ Logo"
+							src="../images/hamburg.png"
+							width={40}
+						/>
+					</nav>
 				</div>
 			</div>
-			<div className={content}>
-				<main>
-					{children}
-				</main>
+			<div id="cal" className={calendar} style={{display:'none'}}>
+				<Calendar
+					value={new Date()}
+					maxDate={new Date()}
+					onClickDay={(date) => {
+						window.location.assign(`/${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`);
+					}}
+				/>
+			</div>
+			<div id="dropLinks" className={drop} style={{display:'none'}}>
+				<ul>
+					<li>
+						<Link to="/" className={navLinkText}>
+							Home
+						</Link>
+					</li>
+					<li>
+						<Link to="/account" className={navLinkText}>
+							Account
+						</Link>
+					</li>
+					<li>
+						<Link to="/about" className={navLinkText}>
+							About
+						</Link>
+					</li>
+				</ul>
 			</div>
 		</div>
-	)
-}
-
-export default Layout
+		<div className={content}>
+			<main>
+				{children}
+			</main>
+		</div>
+	</div>
+)
+export default DefaultLayout;

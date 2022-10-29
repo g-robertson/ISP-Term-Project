@@ -1,19 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import 'react-calendar/dist/Calendar.css'
 import {
-	container,
-	content,
-	date,
-	heading,
-	navbar,
-	navContent,
-	navLogo,
-	navLinks,
-	navLinkItem,
-	navLinkText,
-	calendar,
-	mobileNav,
-	drop
+	heading
 } from './layout.module.css'
 import {
     articleTitle,
@@ -62,32 +50,29 @@ export function setArticleState(id) {
     );
 }
 
-const Layout = ( {pageContext: {day, articles, contents}} ) => {
-	return (
-		<DefaultLayout>
-			<title>{day}</title>
-			<h1 className={heading}>{day}</h1>
-            {articles.map(article => (
-				<div id={article.placement}>
-					<p className={articleTitle}>
-						{article.title}
-					</p>
-					<p id="timestamp" className={articleTimestamp}>
-						{article.publish_date}
-					</p>
-					<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(contents[article.placement - 1])}} />
-					<div className={inputContainer}>
-						<input id={"input_" + article.placement.toString()}
-						type="checkbox"
-						class="articleCheckbox"
-						onClick={(e) => setArticleState(e.target.id)}
-						/>
-						<p>Mark Article as Read</p>
-					</div>
+const ArticleLayout = ( {pageContext: {day, articles, contents}} ) => (
+	<DefaultLayout>
+		<title>{day}</title>
+		<h1 className={heading}>{day}</h1>
+        {articles.map(article => (
+			<div id={article.placement}>
+				<p className={articleTitle}>
+					{article.title}
+				</p>
+				<p id="timestamp" className={articleTimestamp}>
+					{article.publish_date}
+				</p>
+				<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(contents[article.placement - 1])}} />
+				<div className={inputContainer}>
+					<input id={"input_" + article.placement.toString()}
+					type="checkbox"
+					class="articleCheckbox"
+					onClick={(e) => setArticleState(e.target.id)}
+					/>
+					<p>Mark Article as Read</p>
 				</div>
-			))}
-		</DefaultLayout>
-	)
-}
-
-export default Layout
+			</div>
+		))}
+	</DefaultLayout>
+)
+export default ArticleLayout;

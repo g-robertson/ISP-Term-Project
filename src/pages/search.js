@@ -11,11 +11,8 @@ export const Head = () => {
     )
 }
 
-const SearchPage = () => {
-    return (
-        <Layout>
-        </Layout>
-    )
-}
-
+const SearchPage = () => (
+    <Layout>
+    </Layout>
+)
 export default SearchPage;
