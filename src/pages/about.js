@@ -3,6 +3,8 @@ import Layout from '../components/default_layout'
 import { StaticImage } from 'gatsby-plugin-image'
 import { Link } from 'gatsby'
 
+export { Head } from "../components/default_layout"
+
 // styles
 const headingStyle = {
     fontSize: "40px",

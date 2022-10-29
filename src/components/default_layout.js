@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import 'react-calendar/dist/Calendar.css'
-import Helmet from 'react-helmet'
 import Calendar from 'react-calendar'
-import { StaticImage } from 'gatsby-plugin-image'
+import { getLowResolutionImageURL, StaticImage } from 'gatsby-plugin-image'
 import { Link } from 'gatsby'
 import {
 	container,
@@ -35,15 +34,20 @@ export function updateDate() {
 	return <p>{today.getFullYear()}-{(today.getMonth()+1).toString().padStart(2, 0)}-{today.getDate().toString().padStart(2, 0)}</p>
 }
 
+export const Head = () => {
+	return (
+		<>
+			<link rel="preconnect" href="https://fonts.googleapis.com" />
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+			<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;family=Noto+Sans+JP&amp;display=swap" rel="stylesheet" />
+		</>
+	);
+}
+
 const Layout = ({ children }) => {
 
 	return (
 		<div>
-			<Helmet>
-				<link rel="preconnect" href="https://fonts.googleapis.com" />
-				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-				<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&display=swap" rel="stylesheet" />
-			</Helmet>
 			<div className={container}>
 				<div className={navbar}>
 					<div className={navContent}>

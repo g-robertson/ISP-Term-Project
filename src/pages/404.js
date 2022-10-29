@@ -1,6 +1,8 @@
 import * as React from 'react'
 import Layout from '../components/default_layout'
 
+export { Head } from "../components/default_layout"
+
 const NotFoundPage = () => {
 	return (
 		<Layout pageTitle="404">

@@ -43,13 +43,11 @@
     "gatsby": "^4.24.1",
     "gatsby-plugin-image": "^2.24.0",
     "gatsby-plugin-manifest": "^4.24.0",
-    "gatsby-plugin-react-helmet": "^5.24.0",
     "node-fetch": "^3.1.0",
     "pg": "^8.8.0",
     "pg-promise": "^10.12.0",
     "react": "^18.2.0",
     "react-calendar": "^3.9.0",
-    "react-helmet": "^6.1.0",
     "serve-static": "^1.15.0"
   }
 }

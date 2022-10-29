@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
 import 'react-calendar/dist/Calendar.css'
-import Helmet from 'react-helmet'
-import Calendar from 'react-calendar'
-import { StaticImage } from 'gatsby-plugin-image'
-import { Link } from 'gatsby'
 import {
 	container,
 	content,
@@ -27,6 +23,7 @@ import {
 } from './article.module.css'
 import DefaultLayout from "../components/default_layout"
 
+export {Head} from "../components/default_layout"
 
 export function toggleId(id, dis) {
 		let item = document.getElementById(id);
