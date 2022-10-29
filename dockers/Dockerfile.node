@@ -11,15 +11,15 @@ COPY ./build/node-init/package.json /www/package.json
 RUN npm install
 
 # Compile the gatsby pages
-ADD ./src/components /www/src/components
-ADD ./src/pages /www/src/pages
-ADD ./src/images /www/src/images
-ADD ./src/db /www/src/db
-ADD ./src/data-collection/collect-articles.js /www/src/data-collection/collect-articles.js
 ADD ./scraped /www/scraped
+ADD ./config.js /www/config.js
 ADD ./gatsby-config.js /www/gatsby-config.js
 ADD ./gatsby-node.js /www/gatsby-node.js
-ADD ./config.js /www/config.js
+ADD ./src/data-collection /www/src/data-collection
+ADD ./src/db /www/src/db
+ADD ./src/images /www/src/images
+ADD ./src/components /www/src/components
+ADD ./src/pages /www/src/pages
 RUN gatsby build
 
 # Add the rest
