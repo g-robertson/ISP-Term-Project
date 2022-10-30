@@ -17,5 +17,14 @@ module.exports.main = async function(body) {
     let titledMatches = await articles.retrieveArticlesWithSimilarTitle(query);
     let keywordMatches = await articles.retrieveArticlesWithKeywordByFrequency(query);
 
-    return titledMatches.concat(...keywordMatches);
+    let idsUsed = {};
+    let undupedMatches = [];
+    for (let match of titledMatches.concat(...keywordMatches)) {
+        if (idsUsed[match.article_id] !== true) {
+            idsUsed[match.article_id] = true;
+            undupedMatches.push(match);
+        }
+    }
+
+    return undupedMatches;
 }
