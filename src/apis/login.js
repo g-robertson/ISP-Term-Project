@@ -29,14 +29,14 @@ module.exports.main = async function(body, method, cookies, cookie) {
 
     if (results === null) {
         let hash = await bcrypt.hash(password, 10);
-        await client.none("INSERT INTO Users (Username, Hash, Session_Token) VALUES($1, $2, $3)", [name, hash, authToken]);
+        await client.none("INSERT INTO Users (Username, Hash, Session_Token) VALUES($1, $2, $3);", [name, hash, authToken]);
     } else {
         let hash = results.hash;
         if (!(await bcrypt.compare(password, hash))) {
             return "This username is taken";
         }
 
-        await client.result("UPDATE Users SET Session_Token=$1 WHERE Username=$2", [authToken, name]);
+        await client.result("UPDATE Users SET Session_Token=$1 WHERE Username=$2;", [authToken, name]);
     }
     
     const ONE_MONTH = 1000 * 60 * 60 * 24 * 30;
