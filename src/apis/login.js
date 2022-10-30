@@ -10,7 +10,7 @@ module.exports.main = async function(body, method, cookies, cookie) {
     if (method !== "POST") {
         return "login called without POST method";
     }
-    
+
     let name = body.name;
     let password = body.password;
     if (typeof(name) !== "string") {
@@ -22,7 +22,7 @@ module.exports.main = async function(body, method, cookies, cookie) {
     } else if (password.length < MIN_PASSWORD_LENGTH || password.length >= MAX_PASSWORD_LENGTH) {
         return `Password length must be greater than ${MIN_PASSWORD_LENGTH} and less than ${MAX_PASSWORD_LENGTH}`;
     }
-    
+
 
     let results = await client.oneOrNone("SELECT Hash FROM Users WHERE Username=$1;", [name]);
     let authToken = randomBytes(128);
@@ -38,9 +38,9 @@ module.exports.main = async function(body, method, cookies, cookie) {
 
         await client.result("UPDATE Users SET Session_Token=$1 WHERE Username=$2;", [authToken, name]);
     }
-    
+
     const ONE_MONTH = 1000 * 60 * 60 * 24 * 30;
-    
+
     cookie("auth-token", authToken, {httpOnly: true, maxAge: ONE_MONTH});
     return "Login successful";
 }

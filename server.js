@@ -3,7 +3,7 @@ const cookieParser = require("cookie-parser");
 const serveStatic = require("serve-static");
 
 const {CONFIG} = require("./config.js");
-const {getAllAPIs} = require("./src/helpers.js");
+const {getAllAPIs} = require("./src/helpers/get-all-apis.js");
 const {insertArticles, insertArticlesKeywords} = require("./src/data-collection/collect-articles.js");
 
 async function main() {

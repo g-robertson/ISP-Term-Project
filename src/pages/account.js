@@ -9,19 +9,9 @@ import {
     errorMsg
 } from '../components/layout.module.css'
 
+const { getFormattedDate } = require("../helpers/get-formatted-date.js");
+
 export { Head } from "../components/default_layout"
-
-function getFormattedDate(date) {
-    var year = date.getFullYear();
-
-    var month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : '0' + month;
-
-    var day = date.getDate().toString();
-    day = day.length > 1 ? day : '0' + day;
-
-    return month + '/' + day + '/' + year;
-}
 
 function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
@@ -40,19 +30,17 @@ function greetUser(username, url) {
         })
     }).then(async response => {
         const articles = await response.json();
-        console.log(articles);
         let contentTitle = document.getElementById("accountContent");
         contentTitle.innerHTML = 
             "<p style='font-weight: bold;'>Date Article Read:</p><p style='font-weight: bold;'>Date Article Posted:</p>";
         articles.map(article => {
-            console.log(article);
             let articleRead = getFormattedDate(new Date(article.read));
             let articleDate = getFormattedDate(new Date(article.date));
             let entry = contentTitle.cloneNode(true);
             entry.innerHTML = `<p>${articleRead}</p>
                 <p>
                     <a href="/${article.date.split("T")[0]}#${article.articleNumber}">
-                        ${articleDate}/${article.articleNumber}
+                        ${articleDate}#${article.articleNumber}
                     </a>
                 </p>`;
             insertAfter(contentTitle, entry);

@@ -5,10 +5,6 @@ module.exports.main = async function(body, method, cookies) {
     if (typeof(name) !== "string") {
         return "Username was not sent correctly";
     }
-    
-    // Articles (Publish_Date, Placement)
-    // ReadArticles(Read_Date)
-    // User_ID in common
 
     let results = await client.manyOrNone(`
         SELECT Publish_Date, Placement, UserReadArticles.Read_Date
