@@ -18,7 +18,6 @@ import {
 	drop
 } from './layout.module.css'
 
-
 export function toggleId(id, dis) {
 	let item = document.getElementById(id);
 	if (item.style.display === 'none') {
@@ -28,9 +27,17 @@ export function toggleId(id, dis) {
 	}
 }
 
+export function dateToPath(date) {
+    return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`;
+}
+
 export function updateDate() {
-	let today = new Date();
-	return <p>{today.getFullYear()}-{(today.getMonth()+1).toString().padStart(2, 0)}-{today.getDate().toString().padStart(2, 0)}</p>
+	return <p>{dateToPath(new Date())}</p>
+}
+
+export function search() {
+    let searchUrl = `/search?q=${document.getElementById("searchTextbox").value}`;
+    window.location.assign(searchUrl);
 }
 
 export const Head = ({ children }) => (
@@ -38,7 +45,6 @@ export const Head = ({ children }) => (
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;family=Noto+Sans+JP&amp;display=swap" rel="stylesheet" />
-        <script src="/assets/js/default.js"></script>
 		{children}
 	</>
 );
@@ -63,10 +69,16 @@ const DefaultLayout = ({ children }) => (
 					<nav>
 						<ul className={navLinks}>
 							<li className={navLinkItem}>
-								<input id="searchTextbox" type="text" placeholder="Search" defaultValue="" />
+								<input id="searchTextbox" type="text" placeholder="Search" defaultValue=""
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											search();
+										}
+									}
+								}/>
 							</li>
 							<li className={navLinkItem}>
-								<input id="searchButton" type="button" value="Search" />
+								<input id="searchButton" type="button" value="Search" onClick={search} />
 							</li>
 							<li className={navLinkItem}>
 								<Link to="/" className={navLinkText}>
@@ -99,7 +111,7 @@ const DefaultLayout = ({ children }) => (
 					value={new Date()}
 					maxDate={new Date()}
 					onClickDay={(date) => {
-						window.location.assign(`/${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`);
+						window.location.assign(`/${dateToPath(date)}`);
 					}}
 				/>
 			</div>

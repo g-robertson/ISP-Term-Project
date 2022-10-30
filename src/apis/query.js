@@ -11,7 +11,7 @@ const articles = require("../db/articles.js");
 module.exports.main = async function(body) {
     let query = body.query;
     if (typeof(query) !== "string") {
-        throw "Query request wasn't of type string";
+        return "Query request wasn't of type string";
     }
     
     let titledMatches = await articles.retrieveArticlesWithSimilarTitle(query);
