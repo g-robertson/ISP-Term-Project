@@ -7,6 +7,12 @@ object Users {
   Session_Token: char(128)
 }
 
+object ReadArticles {
+  **User_ID**: FK(Users(User_ID)) PK
+  **Article_ID**: FK(Articles(Article_ID)) PK
+  **Read_Date**: date
+}
+
 object Articles {
   **Article_ID**: smallserial PK
   **Title**: varchar(400)
@@ -22,17 +28,16 @@ object ArticleKeywordLookups {
   **Keyword_Count**: smallint
 }
 
-diamond diaArticleKeywordsOfLength
 object ArticleKeywordsOfLength {
   **Article_ID**: FK(Articles(Article_ID)) PK
   **Keyword_Length**: Theoretical FK(\n  LENGTH(ArticleKeywordLookups.Keyword)\n  WHERE ArticleKeywordLookups.Article_ID = this.Article_ID\n) PK
   **Keywords_Count**: Computed(\n  SUM(ArticleKeywordLookups.Keyword_Count)\n  WHERE ArticleKeywordLookups.Article_ID = this.Article_ID\n  AND LENGTH(ArticleKeywordLookups.Keyword) = this.Keyword_Length\n) 
 }
 
-Users->Articles: Read Articles
+Users -r- ReadArticles: Read Articles
+ReadArticles-r->Articles
 
 Articles->ArticleKeywordLookups: Has Keyword Lookups
-Articles-d-->diaArticleKeywordsOfLength: Has Number of Keywords of Length
-diaArticleKeywordsOfLength-d->ArticleKeywordsOfLength
-diaArticleKeywordsOfLength-u-->ArticleKeywordLookups: Has Sum Equal to\nnumber of Keywords with Keyword_Length\nthat correspond to Article_Id
+Articles-d-->ArticleKeywordsOfLength: Has Number of Keywords of Length
+ArticleKeywordsOfLength-u-->ArticleKeywordLookups: Has Sum Equal to\nnumber of Keywords with Keyword_Length\nthat correspond to Article_Id
 @enduml
