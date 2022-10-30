@@ -21,7 +21,7 @@ function insertionSort(arr) {
 
 function retrieveContent(content_path) {
     let file_content = fs.readFileSync(`./scraped/${content_path}`);
-    return file_content.toString().split(/:[0-9][0-9],/).pop();
+    return file_content.toString().split(/:[0-9][0-9]!!DELIMITER!!/).pop();
 }
 
 exports.createPages = async function ({ actions }) {
