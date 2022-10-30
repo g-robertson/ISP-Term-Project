@@ -32,6 +32,7 @@ exports.createPages = async function ({ actions }) {
     let current_date = parseDate(articles[0].publish_date);
     articles.forEach(article => {
         if (current_date != parseDate(article.publish_date)) {
+            // O(n) if array is already sorted, which it *should* usually be
             sorted_articles = insertionSort(articles_for_day);
             actions.createPage({
                 path: `/${current_date}`,
