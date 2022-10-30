@@ -12,11 +12,15 @@ import {
 	navLogo,
 	navLinks,
 	navLinkItem,
+	navLinkSearch,
+	navLinkSearchBox,
+	navLinkSearchButton,
 	navLinkText,
 	calendar,
 	mobileNav,
 	drop
 } from './layout.module.css'
+import searchIcon from '../images/search.png'
 
 export function toggleId(id, dis) {
 	let item = document.getElementById(id);
@@ -68,18 +72,21 @@ const DefaultLayout = ({ children }) => (
 					</div>
 					<nav>
 						<ul className={navLinks}>
-							<li className={navLinkItem}>
-								<input id="searchTextbox" type="text" placeholder="Search" defaultValue=""
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
-											search();
+							<ul className={`${navLinkItem} ${navLinkSearch}`}>
+								<li className={navLinkSearchBox}>
+									<input className={navLinkText} id="searchTextbox" type="text" placeholder="Search..." defaultValue="" 
+										onKeyDown={(e) => {
+											if (e.key === "Enter") {
+												search();
+											}
 										}
-									}
-								}/>
-							</li>
-							<li className={navLinkItem}>
-								<input id="searchButton" type="button" value="Search" onClick={search} />
-							</li>
+									}/>
+								</li>
+								<li className={navLinkSearchButton}>
+									<input id="searchButton" type="image" src={searchIcon} width="22" height="22" onClick={search}/>
+								</li>
+							</ul>
+
 							<li className={navLinkItem}>
 								<Link to="/" className={navLinkText}>
 									Home

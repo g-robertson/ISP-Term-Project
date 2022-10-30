@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&display=swap');
 
 @media screen and (max-device-width: 720px) {
-	.mobileNav {
+	.mobile-nav {
 		display: inline-flex;
 		justify-content: flex-end;
 		cursor: pointer;
@@ -12,7 +12,7 @@
 }
 
 @media screen and (min-device-width: 721px) {
-	.mobileNav {
+	.mobile-nav {
 		display: none;
 	}
 }
@@ -34,6 +34,8 @@ body {
 
 nav {
 	flex-basis: 33%;
+	display: flex;
+	justify-content: center;
 }
 
 .drop {
@@ -59,7 +61,7 @@ nav {
 }
 
 .content {
-	margin: 50px auto 0px auto;
+	margin: 50px auto 50px auto;
 	max-width: 500px;
 }
 
@@ -92,32 +94,87 @@ nav {
 }
 
 .nav-links {
+	width: 100%;
 	display: flex;
 	list-style: none;
 	justify-content: flex-end;
 }
 
-.nav-link-item > input {
-	background: white;
+.nav-links > li {
+	margin-right: 20px;
 }
-.nav-link-item > input[type="text"] {
-	width: 100px;
+
+.nav-link-search {
+	display: flex;
+	list-style: none;
+	padding: 7px 10px 7px 10px;
+	border: 2px solid black;
+	border-radius: 20px;
+	margin-right: 10px;
+	transition: border-color 0.2s ease;
 }
-.nav-link-item > input[type="button"] {
-	width: 55px;
+
+.nav-link-search:hover,
+.nav-link-search:focus-within {
+	border-color: #c4c4c4;
+}
+
+.nav-link-search:hover .nav-link-search-box,
+.nav-link-search:focus-within .nav-link-search-box{
+	opacity: 1;
+}
+
+.nav-link-search-box {
+	width: 70%;
+	padding-right: 20px;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.nav-link-search-button {
+	cursor: pointer;
+	width: 30%;
+	display: flex;
+	align-items: center;
+	justify-content: right;
+}
+
+.nav-link-search-button input {
+	cursor: inherit;
 }
 
 .nav-link-item {
-	padding-right: 20px;
+	display: flex;
+	align-items: center;
 }
 
 .nav-link-item:last-child {
-	padding-right: 0px;
+	margin-right: 0px;
 }
 
 .nav-link-text {
 	color: #c4c4c4;
 	text-decoration: none;
+	font-size: 16px;
+	position: relative;
+}
+
+.nav-link-text::after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 2px;
+	bottom: 0;
+	left: 0;
+	background-color: #c4c4c4;
+	transform-origin: bottom right;
+	transition: transform 0.2s ease-out;
+	transform: scaleX(0);
+}
+
+.nav-link-text:hover::after {
+	transform-origin: bottom left;
+	transform: scaleX(1);
 }
 
 /* Calendar Dropdown Stylings */
@@ -138,7 +195,7 @@ nav {
 	margin-bottom: 40px;
 }
 
-.inputBox {
+.input-box {
 	width: 70%;
 	min-width: 320px;
 	font-size: 22px;
@@ -148,7 +205,7 @@ nav {
 	margin: 0px auto 30px auto;
 }
 
-.inputBox input {
+.input-box input {
 	max-width: 150px;
 	height: 30px;
 	line-height: 30px;
@@ -168,7 +225,7 @@ nav {
 	justify-content: space-between;
 }
 
-.loginButton {
+.login-button {
 	background-color: black;
 	color: #c4c4c4;
 	padding: 5px;
