@@ -28,7 +28,7 @@ export function toggleId(id, dis) {
 }
 
 export function dateToPath(date) {
-    return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`;
+    return `${date.toISOString().slice(0, "2000-00-00".length)}`;
 }
 
 export function updateDate() {
