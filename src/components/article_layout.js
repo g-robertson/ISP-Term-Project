@@ -43,7 +43,7 @@ export function setArticleState(id) {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           date: window.location.pathname.substring(1),
-          artnumber: thisBox.id.replace("input_", ""),
+          articleNumber: thisBox.id.replace("input_", ""),
           state: thisBox.checked,
         })
       }

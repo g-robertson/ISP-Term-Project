@@ -1,24 +1,34 @@
-const {getUserFromSession} = require("../get-user-from-session.js");
+const getUserInfo = require("./get-user-info.js")
 const {validateClampedDate, validateClampedNumber} = require("../validate-primitives.js");
 const {retrieveArticle} = require("../db/articles.js");
 const {client} = require("../db/test-db-interfacing.js");
 
-module.exports.main = async function(req, res, next, config) {
-    let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
-    let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
-
-    let name = (await getUserFromSession(req, res, next, config)).name;
-    if (name === undefined) {
-        res.status(200).send("No user session could be found").end();
-        return;
+module.exports.main = async function(body, method, cookies) {
+    if (method !== "POST") {
+        return "get-state-read-article called without POST method";
+    }
+    let date = validateClampedDate(body.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let articleNumber = validateClampedNumber(body.articleNumber, 0, 99);
+    if (date === undefined) {
+        return "Date provided was invalid";
+    } else if (articleNumber === undefined) {
+        return "Article number provided was invalid";
     }
 
-    let articleId = await retrieveArticle(`${date}UTC${artnumber}`)
+    let user = await getUserInfo.main(body, method, cookies);
+    if (user === null) {
+        return "No user session could be found";
+    }
 
-    let results = await client.oneOrNone(`SELECT User_ID FROM ReadArticles WHERE UserName=${name} AND ArticleId=${articleId};`);
-    if (results) {
-        res.status(200).send("true").end();
+    let article = await retrieveArticle(date, articleNumber);
+    if (article === null) {
+        return "No matching article could be found";
+    }
+
+    let results = await client.oneOrNone("SELECT User_ID FROM ReadArticles WHERE User_ID=$1 AND ArticleId=$2;", [user.user_id, article.article_id]);
+    if (results === null) {
+        return false;
     } else {
-        res.status(200).send("false").end();
+        return true;
     }
 } 

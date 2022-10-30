@@ -32,7 +32,13 @@ function greetUser(username, url) {
     document.getElementById("errorMessage").textContent = "";
     document.getElementById("login").remove();
     document.getElementById("userGreeting").innerHTML = "Welcome, " + username + "!<br/>Articles You've Read:";
-    fetch("http://" + url.hostname + ":" + url.port + "/api/get-user-read-articles?name=" + username).then(async response => {
+    fetch("http://" + url.hostname + ":" + url.port + "/api/get-user-read-articles", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            name: username
+        })
+    }).then(async response => {
         const articles = await response.json();
         console.log(articles);
         let contentTitle = document.getElementById("accountContent");
@@ -66,12 +72,19 @@ export function submitLogin() {
         }
     ).then(async response => {
         const userInfo = await response.json();
-        if (userInfo.name && username === "" && password === "") {
-            greetUser(userInfo.name, url);
+        if (userInfo.username && username === "" && password === "") {
+            greetUser(userInfo.username, url);
         } else {
-                fetch("http://" + url.hostname + ":" + url.port + "/api/login?name=" + username + "&password=" + password).then(async response => {
-                const msg = await response.text();
-                if (msg === "User successfully logged in") {
+                fetch("http://" + url.hostname + ":" + url.port + "/api/login", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        name: username,
+                        password: password
+                    })
+                }).then(async response => {
+                const msg = await response.json();
+                if (msg === "Login successful") {
                     greetUser(username, url);
                 }
                 else {

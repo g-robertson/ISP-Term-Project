@@ -8,12 +8,12 @@ const articles = require("../db/articles.js");
 
     Gets all articles with titles similar to query or keywords matching query
 */
-module.exports.main = async function(req) {
-    if (typeof(req.query.query) !== "string") {
+module.exports.main = async function(body) {
+    let query = body.query;
+    if (typeof(query) !== "string") {
         throw "Query request wasn't of type string";
     }
-
-    let query = req.query.query;
+    
     let titledMatches = await articles.retrieveArticlesWithSimilarTitle(query);
     let keywordMatches = await articles.retrieveArticlesWithKeywordByFrequency(query);
 

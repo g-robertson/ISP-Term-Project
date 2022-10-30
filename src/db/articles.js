@@ -1,11 +1,13 @@
 const {client, pgp} = require("./test-db-interfacing.js");
 
-module.exports.retrieveArticle = async function(contentPath) {
-    if (typeof(contentPath) !== "string") {
-        throw "Attempted to retrieve an article by content path with a non-string content path";
+module.exports.retrieveArticle = async function(contentPathOrTimestamp, placement) {
+    if (typeof(contentPathOrTimestamp) === "string") {
+        return await client.oneOrNone("SELECT * FROM Articles WHERE Content_Path=$1;", [contentPathOrTimestamp]);
+    } else if ((contentPathOrTimestamp instanceof Date) && Number.isSafeInteger(placement)) {
+        return await client.oneOrNone("SELECT * FROM Articles WHERE Publish_Date=$1 AND Placement=$2;", [contentPathOrTimestamp, placement]);
+    } else {
+        throw "Attempted to retrieve an article by content path with neither a string content path or timestamp and placement";
     }
-
-    return await client.oneOrNone("SELECT * FROM Articles WHERE Content_Path=$1", [contentPath]);
 }
 
 module.exports.retrieveArticlesKeywordsOfLengthCounts = async function(contentPath) {

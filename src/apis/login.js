@@ -2,34 +2,45 @@ const { randomBytes } = require("crypto");
 const { client } = require("../db/test-db-interfacing.js");
 const bcrypt = require("bcrypt");
 
+const MIN_USERNAME_LENGTH = 1;
+const MAX_USERNAME_LENGTH = 30;
 const MIN_PASSWORD_LENGTH = 8;
-module.exports.main = async function(req, res, next, config) {
-    if (req.query.name === undefined || req.query.password === undefined) {
-        res.status(400).end();
-        return;
-    } else if (req.query.name.length === 0 || req.query.name.length >= 30) {
-        res.status(200).send("Username length must be greater than 0 and less than 30").end();
-        return;
-    } else if (req.query.password.length <= MIN_PASSWORD_LENGTH) {
-        res.status(200).send(`Password length must be greater than ${MIN_PASSWORD_LENGTH}.`).end();
-        return;
+const MAX_PASSWORD_LENGTH = 64;
+module.exports.main = async function(body, method, cookies, cookie) {
+    if (method !== "POST") {
+        return "login called without POST method";
     }
+    
+    let name = body.name;
+    let password = body.password;
+    if (typeof(name) !== "string") {
+        return "Username was not sent correctly";
+    } else if (typeof(password) !== "string") {
+        return "Password was not sent correctly";
+    } else if (name.length < MIN_USERNAME_LENGTH || name.length >= MAX_USERNAME_LENGTH) {
+        return `Username length must be greater than ${MIN_USERNAME_LENGTH} and less than ${MAX_USERNAME_LENGTH}`;
+    } else if (password.length < MIN_PASSWORD_LENGTH || password.length >= MAX_PASSWORD_LENGTH) {
+        return `Password length must be greater than ${MIN_PASSWORD_LENGTH} and less than ${MAX_PASSWORD_LENGTH}`;
+    }
+    
 
-    let results = await client.oneOrNone(`SELECT Hash FROM Users WHERE Username='${req.query.name}';`);
+    let results = await client.oneOrNone("SELECT Hash FROM Users WHERE Username=$1;", [name]);
+    let authToken = randomBytes(128);
 
-    let rndBytes = randomBytes(64).toString('hex');
-    if (results) {
-        let hash = results.hash;
-        if (!(await bcrypt.compare(req.query.password, hash))) {
-            res.status(200).send(`This username is taken`).end();
-            return;
-        }
-        await client.result(`UPDATE Users SET Session_Token='${rndBytes}' WHERE Username='${req.query.name}'`);
+    if (results === null) {
+        let hash = await bcrypt.hash(password, 10);
+        await client.none("INSERT INTO Users (Username, Hash, Session_Token VALUES($1, $2, $3", [name, hash, authToken]);
     } else {
-        let hash = await bcrypt.hash(req.query.password, 10);
-        await client.result(`INSERT INTO Users (Username, Hash, Session_Token) VALUES ('${req.query.name}', '${hash}', '${rndBytes}');`);
+        let hash = results.hash;
+        if (!(await bcrypt.compare(password, hash))) {
+            return "This username is taken";
+        }
+
+        await client.result("UPDATE Users SET Session_Token=$1 WHERE Username=$2", [authToken, name]);
     }
+    
     const ONE_MONTH = 1000 * 60 * 60 * 24 * 30;
-    res.cookie("auth-token", rndBytes.toString("hex"), {httpOnly: true, maxAge: ONE_MONTH});
-    res.status(200).send("User successfully logged in").end();
+    
+    cookie("auth-token", authToken, {httpOnly: true, maxAge: ONE_MONTH});
+    return "Login successful";
 }

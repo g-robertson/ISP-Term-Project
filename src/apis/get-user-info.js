@@ -1,10 +1,11 @@
-const {getUserFromSession} = require("../get-user-from-session.js");
+const { client } = require("../db/test-db-interfacing.js");
 
-module.exports.main = async function(req, res, next, config) {
-    let userInfo = await getUserFromSession(req, res, next, config);
-    if (userInfo === undefined) {
-        res.status(200).send(JSON.stringify({})).end();
-    } else {
-        res.status(200).send(JSON.stringify(userInfo)).end();
+module.exports.main = async function(body, method, cookies) {
+    if (method !== "POST") {
+        return "get-user-info called without POST method";
+    } else if (cookies["auth-token"] === undefined) {
+        return "No authentication token sent with request";
     }
+
+    return await client.oneOrNone("SELECT Username, User_ID FROM Users WHERE Session_Token=$1;", [Buffer.from(cookies["auth-token"])]);
 }

@@ -1,37 +1,40 @@
 const {retrieveArticle} = require("../db/articles.js");
-const {getUserFromSession} = require("../get-user-from-session.js");
 const {validateClampedDate, validateClampedNumber} = require("../validate-primitives.js");
 const {client} = require("../db/test-db-interfacing.js");
 
-module.exports.main = async function(req, res, next, config) {
-    let date = validateClampedDate(req.body.date, new Date("2000/01/01"), new Date("9999/12/30"));
-    let artnumber = validateClampedNumber(req.body.artnumber, 0, 99);
-    let state = req.body.state;
-
-    if (date === undefined || artnumber === undefined || state === undefined) {
-        res.status(400).end();
-        return;
+module.exports.main = async function(body, method, cookies) {
+    if (method !== "POST") {
+        return "set-state-read-article called without POST method";
+    }
+    let date = validateClampedDate(body.date, new Date("2000/01/01"), new Date("9999/12/30"));
+    let articleNumber = validateClampedNumber(body.articleNumber, 0, 99);
+    let state = body.state;
+    if (date === undefined) {
+        return "Date provided was invalid";
+    } else if (articleNumber === undefined) {
+        return "Article number provided was invalid";
+    } else if (typeof(state) !== "boolean") {
+        return "State provided was not a boolean";
     }
 
-    let userId = (await getUserFromSession(req, res, next, config))?.id;
-    if (userId === undefined) {
-        res.status(200).send("No user session could be found").end();
-        return;
+    let user = (await getUserInfo.main(body, method, cookies));
+    if (typeof(user) !== "object") {
+        return "No user session could be found";
     }
 
-    let article = await retrieveArticle(`${date}UTC${artnumber}`);
-    let read = state[0] === "t";
-
-    let results = await client.any(`SELECT User_ID FROM ReadArticles WHERE User_ID=${userId} AND Article_ID='${article.article_id}';`);
-
-    // unix time in seconds
-    let currentTime = Math.floor(new Date().valueOf() / 1000);
-
-    if (read && results.length > 0) {
-        await client.result(`DELETE FROM ReadArticles WHERE User_ID=${userId} AND Article_ID=${article.article_id};`);
-    } else if (!read && results.length === 0) {
-        await client.result(`INSERT INTO ReadArticles VALUES (${userId}, ${article.article_id}, to_timestamp(${currentTime}));`);
+    let article = await retrieveArticle(date, articleNumber);
+    if (article === null) {
+        return "No matching article could be found";
     }
 
-    res.status(200).send("Proper state set for article read").end();
+    
+    if (state && results.length > 0) {
+        await client.result("DELETE FROM ReadArticles WHERE User_ID=$1 AND Article_ID=$2;", [user.user_id, article.article_id]);
+    } else if (!state && results.length === 0) {
+        await client.result(`
+            INSERT INTO ReadArticles (User_ID, Article_ID, Read_Date) VALUES ($1, $2, CURRENT_TIMESTAMP())
+            ON CONFLICT (User_ID, Article_ID) DO UPDATE SET Read_Date = CURRENT_TIMESTAMP();`, [user.user_id, article.article_id]);
+    }
+
+    return "Proper state set for article";
 }

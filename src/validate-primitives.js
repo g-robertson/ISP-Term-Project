@@ -3,21 +3,21 @@ module.exports.validateClampedDate = function(date, lower, upper) {
         try {
             parsedDate = new Date(date);
         } catch {
-            `${date} is not a vaild date object.`;
+            return undefined;
         }
     }
     if (parsedDate < lower || parsedDate > upper) {
-        throw `Invalid date ${date} with regard to clamps [${lower}, ${upper}]`;
+        return undefined;
     }
     return date;
 }
 
 module.exports.validateClampedNumber = function(number, lower, upper) {
     if (typeof(number) !== "number") {
-            Number(number);
+        number = Number(number);
     }
-    if (number === NaN || number < lower || number > upper) {
-        throw `Invalid number ${number} with regard to clamps [${lower}, ${upper}]`;
+    if (!Number.isFinite(number) || number < lower || number > upper) {
+        return undefined;
     }
     return number;
 }
