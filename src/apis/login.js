@@ -14,7 +14,7 @@ module.exports.main = async function(body, method, cookies, cookie) {
     let name = body.name;
     let password = body.password;
     if (typeof(name) !== "string") {
-        return "Username was not sent correctly";
+        return "Username was not sent correctly (login)";
     } else if (typeof(password) !== "string") {
         return "Password was not sent correctly";
     } else if (name.length < MIN_USERNAME_LENGTH || name.length >= MAX_USERNAME_LENGTH) {

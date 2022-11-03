@@ -1,10 +1,7 @@
 const {insertArticles, insertArticlesKeywords} = require("./src/data-collection/collect-articles.js");
 const {retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("./src/db/articles.js");
-const fs = require('fs'); 
-
-function parseDate(date) {
-    return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`;
-}
+const {getFormattedDate} = require("./src/helpers/get-formatted-date");
+const fs = require('fs');
 
 function insertionSort(arr) {
     for (let i = 0; i < arr.length; ++i) {
@@ -29,9 +26,9 @@ exports.createPages = async function ({ actions }) {
     await insertArticlesKeywords();
     const articles = await retrieveInsertedArticles();
     let articles_for_day = [];
-    let current_date = parseDate(articles[0].publish_date);
+    let current_date = getFormattedDate(articles[0].publish_date);
     articles.forEach(article => {
-        if (current_date != parseDate(article.publish_date)) {
+        if (current_date != getFormattedDate(article.publish_date)) {
             // O(n) if array is already sorted, which it *should* usually be
             sorted_articles = insertionSort(articles_for_day);
             actions.createPage({
@@ -43,7 +40,7 @@ exports.createPages = async function ({ actions }) {
                     contents: sorted_articles.map(x => retrieveContent(x.content_path)),
                 }
             })
-            current_date = parseDate(article.publish_date);
+            current_date = getFormattedDate(article.publish_date);
             articles_for_day = [];
         }
         articles_for_day.push(article);

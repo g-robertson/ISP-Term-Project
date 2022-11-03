@@ -8,11 +8,11 @@ module.exports.main = async function(body, method, cookies) {
         return "set-state-read-article called without POST method";
     }
     let date = validateClampedDate(body.date, new Date("2000/01/01"), new Date("9999/12/30"));
-    let articleNumber = validateClampedNumber(body.articleNumber, 0, 99);
+    let placement = validateClampedNumber(body.placement, 0, 99);
     let state = body.state;
     if (date === undefined) {
         return "Date provided was invalid";
-    } else if (articleNumber === undefined) {
+    } else if (placement === undefined) {
         return "Article number provided was invalid";
     } else if (typeof(state) !== "boolean") {
         return "State provided was not a boolean";
@@ -23,7 +23,7 @@ module.exports.main = async function(body, method, cookies) {
         return "No user session could be found";
     }
 
-    let article = await retrieveArticle(new Date(date), articleNumber);
+    let article = await retrieveArticle(new Date(date), placement);
 
     if (article === null) {
         return "No matching article could be found";

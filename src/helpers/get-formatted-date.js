@@ -1,11 +1,6 @@
 module.exports.getFormattedDate = function(date) {
-    var year = date.getFullYear();
-
-    var month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : '0' + month;
-
-    var day = date.getDate().toString();
-    day = day.length > 1 ? day : '0' + day;
-
-    return year + '/' + month + '/' + day;
+    let year = date.getFullYear();
+    let month = (date.getMonth()+1).toString().padStart(2, 0);
+    let day = date.getDate().toString().padStart(2, 0);
+    return `${year}-${month}-${day}`;
 }

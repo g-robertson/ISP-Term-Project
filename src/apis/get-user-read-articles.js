@@ -19,7 +19,7 @@ module.exports.main = async function(body, method, cookies) {
     return results.map(v => {
         return {
             date: v.publish_date,
-            articleNumber: v.placement,
+            placement: v.placement,
             read: v.read_date
         };
     });

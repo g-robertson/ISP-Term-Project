@@ -10,7 +10,6 @@ import {
     inputContainer
 } from './article.module.css'
 import DefaultLayout from "../components/default_layout"
-
 export { Head } from "../components/default_layout"
 
 export function toggleId(id, dis) {
@@ -22,14 +21,9 @@ export function toggleId(id, dis) {
 		}
 }
 
-export function updateDate() {
-	let today = new Date();
-	return <p>{today.getFullYear()}-{(today.getMonth()+1).toString().padStart(2, 0)}-{today.getDate().toString().padStart(2, 0)}</p>
-}
-
 function parseContent(content) {
     return content
-      .replaceAll(`<img`,`<img alt="Article Image"`)
+      .replaceAll(`<img`,`<img alt="Article Image" width="500px" height="282px"`)
       .replaceAll(`src=">`, `src="`)
 }
 
@@ -43,7 +37,7 @@ export function setArticleState(id) {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           date: window.location.pathname.substring(1),
-          articleNumber: thisBox.id.replace("input_", ""),
+          placement: thisBox.id.replace("input_", ""),
           state: thisBox.checked,
         })
       }
