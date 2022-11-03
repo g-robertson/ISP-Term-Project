@@ -1,5 +1,6 @@
 .cache
 .git
+/src/data-collection/jpez-scraper
 /node_modules
 /archive
 /backup
