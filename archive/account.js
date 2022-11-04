@@ -1,21 +1,20 @@
-import React from "react"
-import DefaultLayout from '../components/default_layout'
+import React from "react";
+import DefaultLayout from '../components/default_layout';
 import {
 	heading,
 	inputBox,
 	articleDetails,
     loginButton,
     errorMsg
-} from '../components/layout.module.css'
+} from '../components/layout.module.css';
 
 const { getFormattedDate } = require("../helpers/get-formatted-date.js");
 
-export { Head } from "../components/default_layout"
+export { Head } from "../components/default_layout";
 
 function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
-
 
 function greetUser(username, url) {
     document.getElementById("errorMessage").textContent = "";
@@ -33,8 +32,8 @@ function greetUser(username, url) {
         contentTitle.innerHTML = 
             "<p style='font-weight: bold;'>Date Article Read:</p><p style='font-weight: bold;'>Date Article Posted:</p>";
         articles.map(article => {
-            let articleRead = getFormattedDate(new Date(article.read));
-            let articleDate = getFormattedDate(new Date(article.date));
+            let articleRead = getFormattedDate(article.read);
+            let articleDate = getFormattedDate(article.date);
             let entry = contentTitle.cloneNode(true);
             entry.innerHTML = `<p>${articleRead}</p>
                 <p>

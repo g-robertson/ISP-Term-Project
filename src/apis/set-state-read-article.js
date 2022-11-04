@@ -1,4 +1,4 @@
-const getUserInfo = require("./get-user-info.js")
+const getUserInfo = require("./get-user-info.js");
 const {retrieveArticle} = require("../db/articles.js");
 const {validateClampedDate, validateClampedNumber} = require("../validate-primitives.js");
 const {client} = require("../db/test-db-interfacing.js");

@@ -7,7 +7,6 @@ import {
     loginButton,
     errorMsg
 } from '../components/layout.module.css'
-import { getFormattedDate } from "../helpers/get-formatted-date";
 export { Head } from "../components/default_layout"
 
 function compareArticles(a, b) {
@@ -20,10 +19,10 @@ function compareArticles(a, b) {
 
 const ReadArticle = ({ article }) => (
     <div className={articleDetails}>
-        <p>{getFormattedDate(new Date(article.read))}</p>
+        <p>{article.read.split("T")[0]}</p>
         <p>
-            <a href={`/${getFormattedDate(new Date(article.date))}#${article.placement}`}>
-                {getFormattedDate(new Date(article.date))}#{article.placement}
+            <a href={`/${article.date.split("T")[0]}#${article.placement}`}>
+                {article.date.split("T")[0]}#{article.placement}
             </a>
         </p>
     </div>
@@ -95,6 +94,7 @@ class AccountPage extends React.Component {
 
     render() {
         if (Array.isArray(this.state.articles) && this.state.name !== undefined) {
+            console.log(this.state.articles);
             return (
                 <Layout>
                     <h1 className={heading}>Welcome, {this.state.name}!<br/>Articles You've Read:</h1>
