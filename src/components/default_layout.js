@@ -15,12 +15,16 @@ import {
 	navLinkSearch,
 	navLinkSearchBox,
 	navLinkSearchButton,
+	navLinkDropSearch,
+	navLinkDropSearchBox,
 	navLinkText,
 	calendar,
 	mobileNav,
+	searchBar,
 	drop
 } from './layout.module.css'
 import searchIcon from '../images/search.png'
+import searchIconAlt from '../images/search_black.png'
 
 export function toggleId(id, dis) {
 	let item = document.getElementById(id);
@@ -39,9 +43,32 @@ export function updateDate() {
 	return <p>{dateToPath(new Date())}</p>
 }
 
-export function search() {
-    let searchUrl = `/search?q=${document.getElementById("searchTextbox").value}`;
-    window.location.assign(searchUrl);
+export function search(clickedId) {
+	if (clickedId === "searchButton" || clickedId === "searchTextbox") {
+		if (window.getComputedStyle(document.getElementById("navSearch")).visibility === 'hidden') {
+			const bar = document.getElementById("searchBarAlt");
+			const inputBar = document.getElementById("searchTextboxAlt");
+			const inputButton = document.getElementById("searchButtonAlt");
+			if (window.getComputedStyle(bar).display === 'none') {
+				bar.style.display = 'flex';
+				inputBar.style.display = 'flex';
+				inputButton.style.display = 'flex';
+			} else {
+				bar.style.display = 'none';
+				inputBar.style.display = 'none';
+				inputButton.style.display = 'none';
+			}
+		} else {
+			let searchUrl = `/search?q=${document.getElementById("searchTextbox").value}`;
+			window.location.assign(searchUrl);
+		}
+	} else if (clickedId === "searchButtonAlt" || clickedId === "searchTextboxAlt") {
+		let searchUrl = `/search?q=${document.getElementById("searchTextboxAlt").value}`;
+		window.location.assign(searchUrl);
+	} else {
+		let searchUrl = `/search?q=${document.getElementById("searchTextboxDrop").value}`;
+		window.location.assign(searchUrl);
+	}
 }
 
 export const Head = ({ children }) => (
@@ -73,17 +100,17 @@ const DefaultLayout = ({ children }) => (
 					<nav>
 						<ul className={navLinks}>
 							<ul className={`${navLinkItem} ${navLinkSearch}`}>
-								<li className={navLinkSearchBox}>
+								<li className={navLinkSearchBox} id="navSearch">
 									<input className={navLinkText} id="searchTextbox" type="text" placeholder="Search..." defaultValue="" 
 										onKeyDown={(e) => {
 											if (e.key === "Enter") {
-												search();
+												search(e.target.id);
 											}
-										}
-									}/>
+										}}
+									/>
 								</li>
 								<li className={navLinkSearchButton}>
-									<input id="searchButton" type="image" src={searchIcon} width="22" height="22" onClick={search}/>
+									<input id="searchButton" type="image" src={searchIcon} width="22" height="22" onClick={e => search(e.target.id)}/>
 								</li>
 							</ul>
 
@@ -139,7 +166,31 @@ const DefaultLayout = ({ children }) => (
 							About
 						</Link>
 					</li>
+					<ul className={`${navLinkItem} ${navLinkDropSearch}`}>
+						<li className={navLinkDropSearchBox} id="navSearchDrop">
+							<input className={navLinkText} id="searchTextboxDrop" type="text" placeholder="Search..." defaultValue="" 
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										search(e.target.id);
+									}
+								}}
+							/>
+						</li>
+						<li className={navLinkSearchButton}>
+							<input id="searchButtonDrop" type="image" src={searchIcon} width="22" height="22" onClick={e => search(e.target.id)}/>
+						</li>
+					</ul>
 				</ul>
+			</div>
+			<div className={searchBar} id="searchBarAlt">
+				<input id="searchTextboxAlt" type="text" placeholder="Search..." defaultValue="" style={{height: '40px', width: '100%'}} 
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							search(e.target.id);
+						}
+					}}
+				/>
+				<input id="searchButtonAlt" type="image" src={searchIconAlt} style={{width: 22, height: 22}} onClick={e => search(e.target.id)}/>
 			</div>
 		</div>
 		<div className={content}>

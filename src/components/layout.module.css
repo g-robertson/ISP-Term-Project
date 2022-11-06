@@ -1,24 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&display=swap');
 
-@media screen and (max-device-width: 720px) {
-	.mobile-nav {
-		display: inline-flex;
-		justify-content: flex-end;
-		cursor: pointer;
-	}
-	nav {
-		display: none;
-	}
-}
-
-@media screen and (min-device-width: 721px) {
-	.mobile-nav {
-		display: none;
-	}
-}
-
 body {
-	min-width: 800px;
+	min-width: 600px;
 }
 
 * {
@@ -34,6 +17,7 @@ body {
 
 nav {
 	flex-basis: 33%;
+	max-width: 33%;
 	display: flex;
 	justify-content: center;
 }
@@ -67,6 +51,7 @@ nav {
 
 .date {
 	flex-basis: 34%;
+	max-width: 34%;
 	color: #c4c4c4;
 	font-weight: bold;
 	text-align: center;
@@ -77,6 +62,10 @@ nav {
 .navbar {
 	width: 100%;
 	background-color: black;
+}
+
+.mobile-nav {
+	display: none;
 }
 
 .nav-content {
@@ -91,6 +80,7 @@ nav {
 
 .nav-logo {
 	flex-basis: 33%;
+	max-width: 33%;
 }
 
 .nav-links {
@@ -105,6 +95,7 @@ nav {
 }
 
 .nav-link-search {
+	width: 50%;
 	display: flex;
 	list-style: none;
 	padding: 7px 10px 7px 10px;
@@ -124,8 +115,25 @@ nav {
 	opacity: 1;
 }
 
+.nav-link-drop-search {
+	width: 100%;
+	display: flex;
+	list-style: none;
+	margin-right: 10px;
+	border-bottom: 2px solid #c4c4c4;
+}
+
+.nav-link-drop-search > li {
+	padding: 0;
+}
+
+.nav-link-drop-search-box {
+	width: 90%;
+	padding-right: 20px;
+}
+
 .nav-link-search-box {
-	width: 70%;
+	width: 90%;
 	padding-right: 20px;
 	opacity: 0;
 	transition: opacity 0.2s ease;
@@ -133,7 +141,7 @@ nav {
 
 .nav-link-search-button {
 	cursor: pointer;
-	width: 30%;
+	width: 10%;
 	display: flex;
 	align-items: center;
 	justify-content: right;
@@ -157,6 +165,7 @@ nav {
 	text-decoration: none;
 	font-size: 16px;
 	position: relative;
+	width: 100%;
 }
 
 .nav-link-text::after {
@@ -239,4 +248,58 @@ nav {
 	font-size: 18px;
 	text-align: center;
 	color: red;
+}
+
+.search-bar {
+	visibility: hidden;
+	border: none;
+	height: 0;
+}
+
+.search-bar * {
+	visibility: inherit;
+}
+
+@media screen and (max-device-width: 899px) {
+	.mobile-nav {
+		display: inline-flex;
+		justify-content: flex-end;
+		cursor: pointer;
+	}
+	nav {
+		display: none;
+	}
+}
+
+@media screen and (min-device-width: 900px) and (max-device-width: 1439px) {
+	.nav-link-search {
+		border-color: transparent
+	}
+
+	.nav-link-search-box {
+		visibility: hidden;
+	}
+
+	.nav-link-search:hover,
+	.nav-link-search:focus-within {
+		border-color: transparent;
+	}
+
+	.search-bar {
+		visibility: visible;
+		width: 33%;
+		max-width: 33%;
+		margin: auto;
+		display: none;
+		justify-content: center;
+		align-items: center;
+		border-bottom: 3px solid black;
+		margin-top: 40px;
+		height: 100%;
+	}
+
+	.search-bar > * {
+		display: inherit;
+		visibility: inherit;
+	}
 }
