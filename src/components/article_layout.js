@@ -23,7 +23,7 @@ export function toggleId(id, dis) {
 
 function parseContent(content) {
     return content
-      .replaceAll(`<img`,`<img alt="Article Image" width="500px" height="282px"`)
+      .replaceAll(`<img`,`<img alt="Article Image"`)
       .replaceAll(`src=">`, `src="`)
 }
 
