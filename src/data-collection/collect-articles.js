@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
-const {insertArticle, insertArticlesKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
+const {insertArticle, updateArticle, insertArticlesKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
 
 const COLLECTION_DIR = path.join(__dirname, "../../scraped");
 const KEYWORD_LENGTH = 20;
@@ -47,19 +47,30 @@ async function scrapeArticle(article) {
     return readArticles[article];
 }
 
+function datePlacementHash(date, placement) {
+    return `${date.valueOf()}-${placement}`;
+}
+
 module.exports.insertArticles = async function() {
     let alreadyInserted = await retrieveInsertedArticles();
-    let alreadyInsertedMap = {};
+    let alreadyInsertedContentPathMap = {};
+    let alreadyInsertedDateMap = {};
     for (let inserted of alreadyInserted) {
-        alreadyInsertedMap[inserted.content_path] = true;
+        alreadyInsertedContentPathMap[inserted.content_path] = inserted;
+        alreadyInsertedDateMap[datePlacementHash(inserted.publish_date, inserted.placement)] = inserted;
     }
     for (let articlePath of usingArticles) {
-        if (alreadyInsertedMap[articlePath]) {
+        if (alreadyInsertedContentPathMap[articlePath] !== undefined) {
             continue;
         }
 
         let article = await scrapeArticle(articlePath);
-        await insertArticle(article.date, article.placement, article.title, articlePath, article.content.length);
+        if (alreadyInsertedDateMap[datePlacementHash(article.date, article.placement)] !== undefined) {
+            await updateArticle(alreadyInsertedDateMap[datePlacementHash(article.date, article.placement)].content_path, {content_path: articlePath});
+            continue;
+        }
+
+        await insertArticle(article.date, article.placement, article.title, articlePath, article.content);
     }
 }
 
@@ -77,7 +88,7 @@ module.exports.insertArticlesKeywords = async function() {
 
         let finishedKeywordsCount = 0;
         for (let row of articleHasKeywordsOfLengthCounts) {
-            if (row.keywords_count + row.keyword_length - 1 === article.content_length) {
+            if (row.keywords_count + row.keyword_length - 1 === article.content.length) {
                 ++finishedKeywordsCount;
             }
         }

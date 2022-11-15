@@ -18,8 +18,8 @@ object Articles {
   **Title**: varchar(400)
   **Publish_Date**: date PK2
   **Placement**: smallint PK2
+  **Content**: varchar(4000)
   **Content_Path**: varchar(200) PK3
-  **Content_Length**: int
 }
 
 object ArticleKeywordLookups {

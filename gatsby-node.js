@@ -19,11 +19,6 @@ function insertionSort(arr) {
     return arr;
 }
 
-function retrieveContent(content_path) {
-    let file_content = fs.readFileSync(`./scraped/${content_path}`);
-    return file_content.toString().split(/:[0-9][0-9]!!DELIMITER!!/).pop();
-}
-
 exports.createPages = async function ({ actions }) {
     await insertArticles();
     await insertArticlesKeywords();
@@ -39,8 +34,7 @@ exports.createPages = async function ({ actions }) {
                 component: require.resolve(`./src/components/article_layout.js`),
                 context: {
                     day: `${current_date}`,
-                    articles: sorted_articles,
-                    contents: sorted_articles.map(x => retrieveContent(x.content_path)),
+                    articles: sorted_articles
                 }
             })
             current_date = parseDate(article.publish_date);

@@ -12,8 +12,8 @@ CREATE TABLE Articles
     Publish_Date TIMESTAMP NOT NULL,
     Placement SMALLINT NOT NULL,
     Title VARCHAR(400) NOT NULL,
+    Content VARCHAR(3000) NOT NULL,
     Content_Path VARCHAR(200) UNIQUE NOT NULL,
-    Content_Length INT NOT NULL,
 
     UNIQUE(Publish_Date, Placement)
 );

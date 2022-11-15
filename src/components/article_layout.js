@@ -50,7 +50,7 @@ export function setArticleState(id) {
     );
 }
 
-const ArticleLayout = ( {pageContext: {day, articles, contents}} ) => (
+const ArticleLayout = ( {pageContext: {day, articles}} ) => (
 	<DefaultLayout>
 		<title>{day}</title>
 		<h1 className={heading}>{day}</h1>
@@ -62,7 +62,7 @@ const ArticleLayout = ( {pageContext: {day, articles, contents}} ) => (
 				<p id="timestamp" className={articleTimestamp}>
 					{article.publish_date}
 				</p>
-				<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(contents[article.placement - 1])}} />
+				<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(article.content)}} />
 				<div className={inputContainer}>
 					<input id={"input_" + article.placement.toString()}
 					type="checkbox"

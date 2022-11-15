@@ -60,7 +60,7 @@ module.exports.retrieveInsertedArticles = async function() {
     return await client.manyOrNone("SELECT * FROM Articles");
 }
 
-module.exports.insertArticle = async function(publishDate, placement, title, contentPath, contentLength) {
+module.exports.insertArticle = async function(publishDate, placement, title, contentPath, content) {
     if (!(publishDate instanceof Date)) {
         throw "Attempted to insert an article with a non-Date valued publish date";
     }
@@ -73,13 +73,69 @@ module.exports.insertArticle = async function(publishDate, placement, title, con
     if (typeof(contentPath) !== "string") {
         throw "Attempted to insert an article with a non-string content path";
     }
-    if (!Number.isSafeInteger(contentLength)) {
-        throw "Attempted to insert an article with a non-integer content length";
+    if (typeof(content) !== "string") {
+        throw "Attempted to insert an article with a non-string content";
     }
 
-    await client.none("INSERT INTO Articles(Publish_Date, Placement, Title, Content_Path, Content_Length)" +
-        "VALUES($1,$2,$3,$4,$5);", [publishDate, placement, title, contentPath, contentLength]
+    await client.none("INSERT INTO Articles(Publish_Date, Placement, Title, Content_Path, Content)" +
+        "VALUES($1,$2,$3,$4,$5);", [publishDate, placement, title, contentPath, content]
     );
+}
+
+module.exports.updateArticle = async function(contentPathOrTimestamp, placementOrOptions, options) {
+    let queryString = [];
+    let parameters = [];
+    let onParameter = 0;
+    // set up to either use content_path, or timestamp & placement,
+    // puts lhs and rhs of query into queryString[0] and queryString[1] with an empty 
+    if (typeof(contentPathOrTimestamp) === "string") {
+        options = placementOrOptions;
+        queryString = ["UPDATE Articles SET", "WHERE Content_Path=$1;"];
+        parameters = [contentPathOrTimestamp];
+        onParameter = 2;
+    } else if ((contentPathOrTimestamp instanceof Date) && Number.isSafeInteger(placementOrOptions)) {
+        queryString = ["UPDATE Articles SET", "WHERE Publish_Date>=$1::date AND Publish_Date<($1::date + '1 day'::interval) AND Placement=$2;"];
+        parameters = [getFormattedDate(contentPathOrTimestamp), placement];
+        onParameter = 3;
+    } else {
+        throw "Attempted to retrieve an article by content path with neither a string content path or timestamp and placement";
+    }
+
+    let queryStringMiddle = "";
+    if (options.publish_date instanceof Date) {
+        queryStringMiddle += `,publish_date = $${onParameter}`;
+        ++onParameter;
+        parameters.push(getFormattedDate(options.publish_date));
+    }
+    if (Number.isSafeInteger(options.placement)) {
+        queryStringMiddle += `,placement = $${onParameter}`;
+        ++onParameter;
+        parameters.push(options.placement);
+    }
+    if (typeof(options.title) === "string") {
+        queryStringMiddle += `,title = $${onParameter}`;
+        ++onParameter;
+        parameters.push(options.title);
+    }
+    if (typeof(options.content) === "string") {
+        queryStringMiddle += `,content = $${onParameter}`;
+        ++onParameter;
+        parameters.push(options.content);
+    }
+    if (typeof(options.content_path) === "string") {
+        queryStringMiddle += `,content_path = $${onParameter}`;
+        ++onParameter;
+        parameters.push(options.content_path);
+    }
+
+    if (queryStringMiddle === "") {
+        return;
+    } else {
+        // sets first comma to space
+        queryStringMiddle = ` ${queryStringMiddle.substring(1)}`;
+    }
+    
+    return await client.none(`${queryString[0]}${queryStringMiddle}${queryString[1]}`, parameters)
 }
 
 module.exports.deleteArticleKeywords = async function(articleId) {
