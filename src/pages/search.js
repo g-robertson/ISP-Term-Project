@@ -24,7 +24,7 @@ class SearchPage extends React.Component {
                     query: new URLSearchParams(window.location.search).get("q")
                 })
             });
-            
+
             this.setState({articles: await results.json()});
         })();
     }

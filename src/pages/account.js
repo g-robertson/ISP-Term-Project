@@ -1,111 +1,133 @@
 import React from "react"
-import DefaultLayout from '../components/default_layout'
+import Layout from '../components/default_layout'
 import {
 	heading,
 	inputBox,
 	articleDetails,
-    headsUp,
     loginButton,
     errorMsg
 } from '../components/layout.module.css'
-
-const { getFormattedDate } = require("../helpers/get-formatted-date.js");
-
 export { Head } from "../components/default_layout"
 
-function insertAfter(referenceNode, newNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+function compareArticles(a, b) {
+    return (
+        a.date === b.date &&
+        a.placement === b.placement &&
+        a.read === b.read
+    )
 }
 
+const ReadArticle = ({ article }) => (
+    <div className={articleDetails}>
+        <p>{article.read.split("T")[0]}</p>
+        <p>
+            <a href={`/${article.date.split("T")[0]}#${article.placement}`}>
+                {article.date.split("T")[0]}#{article.placement}
+            </a>
+        </p>
+    </div>
+);
 
-function greetUser(username, url) {
-    document.getElementById("errorMessage").textContent = "";
-    document.getElementById("login").remove();
-    document.getElementById("userGreeting").innerHTML = "Welcome, " + username + "!<br/>Articles You've Read:";
-    fetch("http://" + url.hostname + ":" + url.port + "/api/get-user-read-articles", {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            name: username
-        })
-    }).then(async response => {
-        const articles = await response.json();
-        let contentTitle = document.getElementById("accountContent");
-        contentTitle.innerHTML = 
-            "<p style='font-weight: bold;'>Date Article Read:</p><p style='font-weight: bold;'>Date Article Posted:</p>";
-        articles.map(article => {
-            let articleRead = getFormattedDate(new Date(article.read));
-            let articleDate = getFormattedDate(new Date(article.date));
-            let entry = contentTitle.cloneNode(true);
-            entry.innerHTML = `<p>${articleRead}</p>
-                <p>
-                    <a href="/${article.date.split("T")[0]}#${article.articleNumber}">
-                        ${articleDate}#${article.articleNumber}
-                    </a>
-                </p>`;
-            insertAfter(contentTitle, entry);
-        })
-    });
-}
+class AccountPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {articles: []};
+    }
 
-export function submitLogin() {
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    let url = new URL(window.location.href);
-    fetch(
-        "http://" + url.hostname + ":" + url.port + "/api/get-user-info",
-        {
-          method: "POST",
-          headers: {'Content-Type': 'application/json'},
+    async submitLogin() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+
+        let result = await fetch("/api/login", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                name: username,
+                password: password
+            })
+        })
+        const msg = await result.json();
+        if (msg === "Login successful") {
+            this.setState({ state: this.state })
         }
-    ).then(async response => {
-        const userInfo = await response.json();
-        if (userInfo.username && username === "" && password === "") {
-            greetUser(userInfo.username, url);
-        } else {
-                fetch("http://" + url.hostname + ":" + url.port + "/api/login", {
+        else {
+            document.getElementById("errorMessage").textContent = msg;
+        }
+    }
+
+    componentDidUpdate() {
+        (async () => {
+            let response = await fetch("/api/get-user-info", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include'
+            });
+            let userInfo = await response.json();
+            if (typeof(userInfo) === 'object' && userInfo !== null) {
+                let results = await fetch("/api/get-user-read-articles", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        name: username,
-                        password: password
+                        name: userInfo.username
                     })
-                }).then(async response => {
-                const msg = await response.json();
-                if (msg === "Login successful") {
-                    greetUser(username, url);
-                }
-                else {
-                    document.getElementById("errorMessage").textContent = msg;
-                }
-            });
-        }
-    })
-}
-    
+                });
 
-const AccountPage = () => (
-    <DefaultLayout>
-        <div id="login">
-        <p className={headsUp}>If you've already logged-in once this session, just press "Submit" with both fields empty.</p>
-            <h1 className={heading}>
-                Signup / Login
-            </h1>
-            <div className={inputBox}>
-                <p>Username: </p>
-                <input type="text" name="username" id="username"/>
-            </div>
-            <div className={inputBox}>
-                <p>Password: </p>
-                <input type="password" name="password" id="password"/>
-            </div>
-            <button className={loginButton} type="button" onClick={() => submitLogin()}>Submit</button>
-        </div>
-        <p id="errorMessage" className={errorMsg}></p>
-        <h1 id="userGreeting" className={heading}>
-        </h1>
-        <div id="accountContent" className={articleDetails}>
-        </div>
-    </DefaultLayout>
-)
+                let result = await results.json();
+                if (
+                    this.state.last_updated_articles === undefined ||
+                    result.length !== this.state.last_updated_articles.length || 
+                    !result.every((val, idx) => compareArticles(val, this.state.last_updated_articles[idx]))
+                ) {
+                    this.setState({
+                        name: userInfo.username,
+                        articles: result,
+                        last_updated_articles: result
+                    });
+                }
+            }
+        })();
+    }
+
+    componentDidMount() {
+        this.setState({ state: this.state });
+    }
+
+    render() {
+        if (Array.isArray(this.state.articles) && this.state.name !== undefined) {
+            console.log(this.state.articles);
+            return (
+                <Layout>
+                    <h1 className={heading}>Welcome, {this.state.name}!<br/>Articles You've Read:</h1>
+                    <div className={articleDetails}>
+                    <p style={{fontWeight: 'bold'}}>Date Article Read:</p><p style={{fontWeight: 'bold'}}>Date Article Posted:</p>
+                    </div>
+                    {this.state.articles.map(article => (
+                        <ReadArticle article={article}></ReadArticle>
+                    ))}
+                </Layout>
+            )
+        } else {
+            return (
+                <Layout>
+                    <div id="login">
+                        <h1 className={heading}>
+                            Signup / Login
+                        </h1>
+                        <div className={inputBox}>
+                            <p>Username: </p>
+                            <input type="text" name="username" id="username"/>
+                        </div>
+                        <div className={inputBox}>
+                            <p>Password: </p>
+                            <input type="password" name="password" id="password"/>
+                        </div>
+                        <button className={loginButton} type="button" onClick={() => this.submitLogin()}>Submit</button>
+                    </div>
+                    <p id="errorMessage" className={errorMsg}></p>
+                </Layout>
+            )
+        }
+    }
+}
+
 export default AccountPage;
