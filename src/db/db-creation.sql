@@ -79,3 +79,46 @@ CREATE TRIGGER ArticleKeywordDeletion
     AFTER DELETE ON ArticleKeywords
     FOR EACH ROW
     EXECUTE FUNCTION Unsum_Keywords();
+
+CREATE OR REPLACE FUNCTION Article_Kanji_Stats (id INT) 
+    RETURNS TABLE (
+        kanji TEXT,
+        amount INT
+    ) 
+    AS $$
+    BEGIN
+        RETURN QUERY SELECT 
+            unnest(i.kanji) AS kanji, 
+            regexp_count(content, unnest(i.kanji)) AS amount 
+            FROM (
+                SELECT 
+                regexp_matches(content, '([一-龯])', 'g') AS kanji 
+                FROM Articles WHERE article_id=id
+            ) AS i, Articles WHERE article_id=id;
+    END; $$ 
+
+    LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION User_Kanji_Stats (id INT) 
+    RETURNS TABLE (
+        kanji TEXT,
+        amount INT,
+        first_seen TIMESTAMP,
+        last_seen TIMESTAMP
+    ) 
+    AS $$
+    BEGIN
+        RETURN QUERY SELECT 
+            (article_kanji_stats).kanji, 
+            COUNT((article_kanji_stats).amount)::INT, 
+            MIN(Read_Date) AS first_seen, 
+            MAX(Read_Date) AS last_seen 
+            FROM (
+                SELECT 
+                article_kanji_stats(article_id) ,
+                Read_Date 
+                FROM ReadArticles WHERE User_ID = $1
+            ) AS result GROUP BY (article_kanji_stats).kanji;
+    END; $$ 
+
+    LANGUAGE 'plpgsql';
