@@ -106,9 +106,9 @@ module.exports.insertArticlesKeywords = async function() {
             for (let j = 1; i + j <= articleContent.length && j <= KEYWORD_LENGTH; ++j) {
                 let keyword = articleContent.substring(i, i + j);
                 if (articleKeywords[keyword] === undefined) {
-                    articleKeywords[keyword] = 0;
+                    articleKeywords[keyword] = {count: 0, firstOccurrence: i};
                 }
-                ++articleKeywords[keyword];
+                ++articleKeywords[keyword].count;
             }
         }
 

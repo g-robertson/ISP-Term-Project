@@ -33,13 +33,13 @@ module.exports.retrieveArticlesWithSimilarTitle = async function(title) {
     return await client.manyOrNone("SELECT * FROM Articles WHERE Title LIKE $1", [`%${title}%`]);
 }
 
-module.exports.retrieveArticlesWithKeywordByFrequency = async function(keyword) {
+module.exports.retrieveArticlesWithKeywordByFrequencyWithFirstOccurrence = async function(keyword) {
     if (typeof(keyword) !== "string") {
         throw "Attempted to retrieve an article by content path with a non-string content path";
     }
 
-    return await client.manyOrNone("SELECT Articles.* FROM Articles JOIN " +
-        "(SELECT Article_ID, Keyword_Count FROM ArticleKeywords WHERE Keyword=$1) AS ArticleKeywords " +
+    return await client.manyOrNone("SELECT Articles.*, ArticleKeywords.First_Occurrence_In_Article FROM Articles JOIN " +
+        "(SELECT Article_ID, Keyword_Count, First_Occurrence_In_Article FROM ArticleKeywords WHERE Keyword=$1) AS ArticleKeywords " +
         "ON ArticleKeywords.Article_ID = Articles.Article_ID " +
         "ORDER BY Keyword_Count DESC;", [keyword]
     );
@@ -147,7 +147,7 @@ module.exports.deleteArticleKeywords = async function(articleId) {
 }
 
 module.exports.insertArticlesKeywords = async function(articleKeywordPairs) {
-    const COLUMN_SET = new pgp.helpers.ColumnSet(['article_id', 'keyword', 'keyword_count'], {table: 'articlekeywords'});
+    const COLUMN_SET = new pgp.helpers.ColumnSet(['article_id', 'keyword', 'first_occurrence_in_article', 'keyword_count'], {table: 'articlekeywords'});
 
     let values = [];
     for (let article in articleKeywordPairs) {
@@ -155,7 +155,8 @@ module.exports.insertArticlesKeywords = async function(articleKeywordPairs) {
             values.push({
                 article_id: parseInt(article),
                 keyword: keyword,
-                keyword_count: articleKeywordPairs[article][keyword]
+                first_occurrence_in_article: articleKeywordPairs[article][keyword].firstOccurrence,
+                keyword_count: articleKeywordPairs[article][keyword].count
             });
         }
     }

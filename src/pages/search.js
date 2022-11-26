@@ -5,7 +5,27 @@ export { Head } from "../components/default_layout"
 
 const SearchResult = ({ article }) => (
     <li>
-        <a href={`/${dateToPath(new Date(article.publish_date))}`}>{article.title}</a>
+        <a href={`/${dateToPath(new Date(article.publish_date))}`}>{
+            (() => {
+                // if there's no occurrence of keyword in article, it must be in title, so bold all occurrences in title
+                if (article.first_occurrence_in_article === undefined) {
+                    let query = new URLSearchParams(window.location.search).get("q");
+                    let titleParts = article.title.split(query);
+                    for (let i = 0; i < titleParts.length - 1; ++i) {
+                        titleParts[i] = (
+                            <>{titleParts[i]}<b>{query}</b></>
+                        );
+                    }
+                    titleParts[titleParts.length - 1] = (
+                        <>{titleParts[titleParts.length - 1]}</>
+                    );
+                    return titleParts;
+                // if there is occurrence of keyword in article, bold that instead
+                } else {
+                    return article.title;
+                }
+            })()
+        }</a>
     </li>
 );
 
@@ -24,8 +44,8 @@ class SearchPage extends React.Component {
                     query: new URLSearchParams(window.location.search).get("q")
                 })
             });
-
-            this.setState({articles: await results.json()});
+            let res = await results.json();
+            this.setState({articles: res});
         })();
     }
 

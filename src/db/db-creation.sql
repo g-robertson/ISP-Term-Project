@@ -31,6 +31,7 @@ CREATE TABLE ArticleKeywords
 (
     Article_ID SMALLINT REFERENCES Articles(Article_ID),
     Keyword VARCHAR(20),
+    First_Occurrence_In_Article SMALLINT,
     Keyword_Count SMALLINT,
 
     PRIMARY KEY (Article_ID, Keyword)
