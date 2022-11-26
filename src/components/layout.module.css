@@ -205,6 +205,17 @@ nav {
 	margin-bottom: 40px;
 }
 
+.subheading {
+	font-size: 32px;
+	margin: auto;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.content-box {
+	margin-bottom: 40px;
+}
+
 .input-box {
 	width: 70%;
 	min-width: 320px;
