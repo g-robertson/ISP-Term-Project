@@ -5,7 +5,7 @@ export { Head } from "../components/default_layout"
 
 const SearchResult = ({ article }) => (
     <li>
-        <a href={`/${dateToPath(new Date(article.publish_date))}`}>{
+        <a href={`/${dateToPath(new Date(article.publish_date))}#${article.placement}`}>{
             (() => {
                 // if there's no occurrence of keyword in article, it must be in title, so bold all occurrences in title
                 if (article.first_occurrence_in_article === undefined) {
@@ -31,10 +31,19 @@ const SearchResult = ({ article }) => (
                 // if there's no occurrence of keyword in article, just send back the first 30 non-ascii characters
                 if (article.first_occurrence_in_article === undefined) {
                     return article.content_text.substring(0, 30);
-                // if there is occurrence of keyword in article, send back 30 characters starting at the occurrence, then bold all occurrences
+                // if there is occurrence of keyword in article, send back context weighted centered around the occurrence, then bold all occurrences
                 } else {
-                    let content = article.content_text.substring(article.first_occurrence_in_article, article.first_occurrence_in_article + 30);
                     let query = new URLSearchParams(window.location.search).get("q");
+
+                    let contextBegin = article.first_occurrence_in_article - 10;
+                    let contextEnd = article.first_occurrence_in_article + query.length + 20;
+                    // if context begin overshoots beginning of article, shift it back to the beginning of article
+                    if (contextBegin < 0) {
+                        let contextOffset = -contextBegin;
+                        contextBegin += contextOffset;
+                        contextEnd += contextOffset;
+                    }
+                    let content = article.content_text.substring(contextBegin, contextEnd);
                     let contentParts = content.split(query);
                     for (let i = 0; i < contentParts.length - 1; ++i) {
                         contentParts[i] = (
