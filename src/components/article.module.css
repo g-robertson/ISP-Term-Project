@@ -18,6 +18,10 @@
 	margin: 0px 0px 40px 0px;
 }
 
+.article-content p rt {
+	display: none;
+}
+
 .article-content img {
 	border: 1px solid black;
 	margin: 10px 0px 20px 0px;

@@ -9,10 +9,12 @@ CREATE TABLE Users
 CREATE TABLE Articles
 (
     Article_ID SMALLSERIAL PRIMARY KEY,
-    Publish_Date TIMESTAMP NOT NULL,
     Placement SMALLINT NOT NULL,
-    Title VARCHAR(400) NOT NULL,
-    Content VARCHAR(3000) NOT NULL,
+    Publish_Date TIMESTAMP NOT NULL,
+    Title_HTML VARCHAR(400) NOT NULL,
+    Title_Text VARCHAR(400) NOT NULL,
+    Content_HTML VARCHAR(3000) NOT NULL,
+    Content_Text VARCHAR(3000) NOT NULL,
     Content_Path VARCHAR(200) UNIQUE NOT NULL,
 
     UNIQUE(Publish_Date, Placement)

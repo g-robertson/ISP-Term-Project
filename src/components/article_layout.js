@@ -22,9 +22,7 @@ export function toggleId(id, dis) {
 }
 
 function parseContent(content) {
-    return content
-      .replaceAll(`<img`,`<img alt="Article Image"`)
-      .replaceAll(`src=">`, `src="`)
+    return content.replaceAll(`src="/`, `src="https://www.nhkeasier.com/`);
 }
 
 export function setArticleState(id) {
@@ -51,12 +49,12 @@ const ArticleLayout = ( {pageContext: {day, articles}} ) => (
         {articles.map(article => (
 			<div id={article.placement}>
 				<p className={articleTitle}>
-					{article.title}
+					{article.title_text}
 				</p>
 				<p id="timestamp" className={articleTimestamp}>
 					{article.publish_date}
 				</p>
-				<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(article.content)}} />
+				<div className={articleContent} dangerouslySetInnerHTML={{__html:parseContent(article.content_html)}} />
 				<div className={inputContainer}>
 					<input id={`input_${article.placement}`}
 					type="checkbox"

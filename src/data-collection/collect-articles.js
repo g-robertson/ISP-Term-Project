@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
-const {insertArticle, updateArticle, insertArticlesKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts} = require("../db/articles.js");
+const {insertArticle, updateArticle, insertArticlesKeywords, deleteArticleKeywords, retrieveInsertedArticles, retrieveArticle, retrieveArticlesKeywordsOfLengthCounts, parsePublishDate} = require("../db/articles.js");
 
 const COLLECTION_DIR = path.join(__dirname, "../../scraped");
 const KEYWORD_LENGTH = 20;
@@ -24,24 +24,21 @@ for (let i = 0; i < articles.length; ++i) {
 async function scrapeArticle(article) {
     if (readArticles[article] === "valid") {
         let articlePath = path.join(COLLECTION_DIR, article);
-        let scrapeContents = (await fs.readFile(articlePath)).toString();
-        let scrapeParts = scrapeContents.split(",");
-        if (scrapeParts.length !== 4) {
-            scrapeParts = scrapeContents.split("!!DELIMITER!!");
-            if (scrapeParts.length !== 4) {
-                throw `Article ${article} required as CSV {Placement,Title,Date,Content} had ${scrapeParts.length - 1} commas instead of 3.\n`
-                    + `Replace the commas intended to be split on with '!!DELIMITER!!' to fix.`;
-            }
-        }
+        let articleHTML = (await fs.readFile(articlePath)).toString();
 
+        let articleParts = article.split("UTC");
+        if (articleParts.length < 2) {
+            throw "A scraped article path must be formatted with the placement after the first instance of the phrase 'UTC'";
+        }
+        let articlePlacement = parseInt(articleParts[1]);
+        if (!Number.isSafeInteger(articlePlacement)) {
+            throw "A scraped article path after the first instance of the phrase 'UTC' must refer to an integer placement";
+        }
         readArticles[article] = {
-            placement: parseInt(scrapeParts[0]),
-            title: scrapeParts[1],
-            // changes format from "YYYY-MM-DD HH:MM:SS" with implicit GMT+0900 (JST)
-            //      to format      "YYYY MM DD HH:MM:SS GMT+0900"
-            date: new Date(`${scrapeParts[2].replace(/-/g, ' ')} GMT+0900`),
-            content: scrapeParts[3]
-        };
+            date: parsePublishDate(articleHTML),
+            articleHTML: articleHTML,
+            placement: articlePlacement
+        }
     }
 
     return readArticles[article];
@@ -66,11 +63,11 @@ module.exports.insertArticles = async function() {
 
         let article = await scrapeArticle(articlePath);
         if (alreadyInsertedDateMap[datePlacementHash(article.date, article.placement)] !== undefined) {
-            await updateArticle(alreadyInsertedDateMap[datePlacementHash(article.date, article.placement)].content_path, {content_path: articlePath});
+            await updateArticle(alreadyInsertedDateMap[datePlacementHash(article.publish_date, article.placement)].content_path, {content_path: articlePath});
             continue;
         }
 
-        await insertArticle(article.date, article.placement, article.title, articlePath, article.content);
+        await insertArticle(article.placement, article.articleHTML, articlePath);
     }
 }
 
@@ -88,7 +85,7 @@ module.exports.insertArticlesKeywords = async function() {
 
         let finishedKeywordsCount = 0;
         for (let row of articleHasKeywordsOfLengthCounts) {
-            if (row.keywords_count + row.keyword_length - 1 === article.content.length) {
+            if (row.keywords_count + row.keyword_length - 1 === article.content_text.length) {
                 ++finishedKeywordsCount;
             }
         }
@@ -99,12 +96,10 @@ module.exports.insertArticlesKeywords = async function() {
 
         await deleteArticleKeywords(article.article_id);
 
-        let articleContent = (await scrapeArticle(articlePath)).content;
-
         let articleKeywords = {};
-        for (let i = 0; i < articleContent.length; ++i) {
-            for (let j = 1; i + j <= articleContent.length && j <= KEYWORD_LENGTH; ++j) {
-                let keyword = articleContent.substring(i, i + j);
+        for (let i = 0; i < article.content_text.length; ++i) {
+            for (let j = 1; i + j <= article.content_text.length && j <= KEYWORD_LENGTH; ++j) {
+                let keyword = article.content_text.substring(i, i + j);
                 if (articleKeywords[keyword] === undefined) {
                     articleKeywords[keyword] = {count: 0, firstOccurrence: i};
                 }

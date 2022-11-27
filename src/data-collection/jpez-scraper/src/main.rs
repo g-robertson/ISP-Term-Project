@@ -152,47 +152,47 @@ fn main() {
 
                 // Collect information from article
                 for (article, number) in articles {
-                    let mut article_entry: String = number.to_string();
-                    article_entry.push_str("!!DELIMITER!!");
-                    // Parse article as HTML
-                    let article_html = scraper::Html::parse_document(&article);
+                    // let mut article_entry: String = number.to_string();
+                    // article_entry.push_str("!!DELIMITER!!");
+                    // // Parse article as HTML
+                    // let article_html = scraper::Html::parse_document(&article);
 
-                    // Collect title
-                    let title_selector = scraper::Selector::parse("h3").unwrap();
-                    let title: String = article_html.select(&title_selector).map(|x| x.inner_html()).collect();
-                    article_entry.push_str(&scrub(title));
-                    article_entry.push_str("!!DELIMITER!!");
+                    // // Collect title
+                    // let title_selector = scraper::Selector::parse("h3").unwrap();
+                    // let title: String = article_html.select(&title_selector).map(|x| x.inner_html()).collect();
+                    // article_entry.push_str(&scrub(title));
+                    // article_entry.push_str("!!DELIMITER!!");
 
-                    // Collect time
-                    let time_selector = scraper::Selector::parse("time").unwrap();
-                    let time: String = article_html.select(&time_selector).map(|x| x.inner_html()).collect();
-                    article_entry.push_str(&scrub(time.replace(" +0900 (JST)", "")));
-                    article_entry.push_str("!!DELIMITER!!");
+                    // // Collect time
+                    // let time_selector = scraper::Selector::parse("time").unwrap();
+                    // let time: String = article_html.select(&time_selector).map(|x| x.inner_html()).collect();
+                    // article_entry.push_str(&scrub(time.replace(" +0900 (JST)", "")));
+                    // article_entry.push_str("!!DELIMITER!!");
 
-                    // Collect contents
-                    let paragraph_selector = scraper::Selector::parse("p, img").unwrap();
-                    let paragraphs = article_html.select(&paragraph_selector);
-                    paragraphs
-                    .zip(1..10)
-                    .for_each(|(item, _number)|
-                        if item.inner_html() == "" {
-                            let src = item.value().attr("src").unwrap();
-                            if src.starts_with("http") {
-                                article_entry.push_str("<img src=\">");
-                                article_entry.push_str(&scrub(src.to_string()));
-                                article_entry.push_str("\">");
-                            } else {
-                                article_entry.push_str("<img src=\"https://nhkeasier.com/");
-                                article_entry.push_str(&scrub(src.to_string()));
-                                article_entry.push_str("\">");
-                            }
-                        } else {
-                            article_entry.push_str("<p>");
-                            article_entry.push_str(&scrub(item.inner_html()));
-                            article_entry.push_str("</p>");
-                        }
-                    );
-                    fs::write(format!("./{}{}", current_day, number), article_entry).expect("Unable to write file");
+                    // // Collect contents
+                    // let paragraph_selector = scraper::Selector::parse("p, img").unwrap();
+                    // let paragraphs = article_html.select(&paragraph_selector);
+                    // paragraphs
+                    // .zip(1..10)
+                    // .for_each(|(item, _number)|
+                    //     if item.inner_html() == "" {
+                    //         let src = item.value().attr("src").unwrap();
+                    //         if src.starts_with("http") {
+                    //             article_entry.push_str("<img src=\">");
+                    //             article_entry.push_str(&scrub(src.to_string()));
+                    //             article_entry.push_str("\">");
+                    //         } else {
+                    //             article_entry.push_str("<img src=\"https://nhkeasier.com/");
+                    //             article_entry.push_str(&scrub(src.to_string()));
+                    //             article_entry.push_str("\">");
+                    //         }
+                    //     } else {
+                    //         article_entry.push_str("<p>");
+                    //         article_entry.push_str(&scrub(item.inner_html()));
+                    //         article_entry.push_str("</p>");
+                    //     }
+                    // );
+                    fs::write(format!("./{}{}", current_day, number), article).expect("Unable to write file");
                 }
             }
         });
