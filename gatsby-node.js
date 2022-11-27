@@ -20,23 +20,25 @@ exports.createPages = async function ({ actions }) {
     await insertArticles();
     await insertArticlesKeywords();
     const articles = await retrieveInsertedArticles();
-    let articles_for_day = [];
-    let current_date = getFormattedDate(articles[0].publish_date);
+    let articles_for_days = {};
     articles.forEach(article => {
-        if (current_date != getFormattedDate(article.publish_date)) {
-            // O(n) if array is already sorted, which it *should* usually be
-            sorted_articles = insertionSort(articles_for_day);
-            actions.createPage({
-                path: `/${current_date}`,
-                component: require.resolve(`./src/components/article_layout.js`),
-                context: {
-                    day: `${current_date}`,
-                    articles: sorted_articles
-                }
-            })
-            current_date = getFormattedDate(article.publish_date);
-            articles_for_day = [];
+        let day = getFormattedDate(article.publish_date);
+        if (articles_for_days[day] === undefined) {
+            articles_for_days[day] = [];
         }
-        articles_for_day.push(article);
+        articles_for_days[day].push(article);
     });
+
+    for (let day in articles_for_days) {
+        // O(n) if array is already sorted, which it *should* usually be
+        articles_for_days[day] = insertionSort(articles_for_days[day]);
+        actions.createPage({
+            path: `/${day}`,
+            component: require.resolve("./src/components/article_layout.js"),
+            context: {
+                day: day,
+                articles: articles_for_days[day]
+            }
+        });
+    }
 }

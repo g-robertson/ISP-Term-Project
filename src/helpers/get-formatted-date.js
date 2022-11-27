@@ -1,6 +1,3 @@
 module.exports.getFormattedDate = function(date) {
-    let year = date.getFullYear();
-    let month = (date.getMonth()+1).toString().padStart(2, 0);
-    let day = date.getDate().toString().padStart(2, 0);
-    return `${year}-${month}-${day}`;
+    return date.toISOString().substring(0, "0000-00-00".length);
 }
