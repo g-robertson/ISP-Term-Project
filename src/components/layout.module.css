@@ -315,3 +315,11 @@ nav {
 		visibility: inherit;
 	}
 }
+
+rt {
+	visibility: hidden;
+}
+
+ruby:hover rt {
+	visibility: visible;
+}

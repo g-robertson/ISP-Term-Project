@@ -1,8 +1,15 @@
 /* Article Page Stylings */
+
 .article-title {
 	color: blue;
 	font-size: 28px;
+	line-height: 35px;
 	font-family: 'Noto Sans JP', sans-serif;
+}
+
+.article-title rt {
+	font-size: 14px;
+	line-height: 17px;
 }
 
 .article-timestamp {
@@ -18,8 +25,9 @@
 	margin: 0px 0px 40px 0px;
 }
 
-.article-content p rt {
-	display: none;
+.article-content rt {
+	font-size: 11px;
+	line-height: 15px;
 }
 
 .article-content img {

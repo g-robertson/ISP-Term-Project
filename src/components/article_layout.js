@@ -48,9 +48,9 @@ const ArticleLayout = ( {pageContext: {day, articles}} ) => (
 		<h1 className={heading}>{day}</h1>
         {articles.map(article => (
 			<div id={article.placement}>
-				<p className={articleTitle}>
-					{article.title_text}
-				</p>
+				<p className={articleTitle}
+				   dangerouslySetInnerHTML={{__html: article.title_html.substring("<h3>".length, article.title_html.length - "</h3>".length)}}
+				/>
 				<p id="timestamp" className={articleTimestamp}>
 					{article.publish_date}
 				</p>
