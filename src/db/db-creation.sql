@@ -92,12 +92,12 @@ CREATE OR REPLACE FUNCTION Article_Kanji_Stats (id INT)
     BEGIN
         RETURN QUERY SELECT 
             unnest(i.kanji) AS kanji, 
-            regexp_count(content, unnest(i.kanji)) AS amount 
+            regexp_count(Content_Text, unnest(i.kanji)) AS amount 
             FROM (
                 SELECT 
-                regexp_matches(content, '([一-龯])', 'g') AS kanji 
-                FROM Articles WHERE article_id=id
-            ) AS i, Articles WHERE article_id=id;
+                regexp_matches(Content_Text, '([一-龯])', 'g') AS kanji 
+                FROM Articles WHERE Article_ID=id
+            ) AS i, Articles WHERE Article_ID=id;
     END; $$ 
 
     LANGUAGE 'plpgsql';
@@ -112,16 +112,16 @@ CREATE OR REPLACE FUNCTION User_Kanji_Stats (id INT)
     AS $$
     BEGIN
         RETURN QUERY SELECT 
-            (article_kanji_stats).kanji, 
-            COUNT((article_kanji_stats).amount)::INT, 
+            (Article_Kanji_Stats).kanji, 
+            COUNT((Article_Kanji_Stats).amount)::INT, 
             MIN(Read_Date) AS first_seen, 
             MAX(Read_Date) AS last_seen 
             FROM (
                 SELECT 
-                article_kanji_stats(article_id) ,
+                Article_Kanji_Stats(Article_ID) ,
                 Read_Date 
                 FROM ReadArticles WHERE User_ID = $1
-            ) AS result GROUP BY (article_kanji_stats).kanji;
+            ) AS result GROUP BY (Article_Kanji_Stats).kanji;
     END; $$ 
 
     LANGUAGE 'plpgsql';
